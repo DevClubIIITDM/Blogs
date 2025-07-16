@@ -8,7 +8,7 @@
 
 ### 1. Create GitHub Repository
 1. Go to [GitHub](https://github.com) and create a new repository
-2. Name it `tech-club-blog` (or your preferred name)
+2. Name it `Blogs` (or your preferred name)
 3. Make it public (required for free GitHub Pages)
 
 ### 2. Initialize Git and Push to GitHub
@@ -23,7 +23,7 @@ git add .
 git commit -m "Initial commit"
 
 # Add remote repository (replace YOUR_USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/tech-club-blog.git
+git remote add origin https://github.com/YOUR_USERNAME/Blogs.git
 
 # Push to GitHub
 git push -u origin main
@@ -48,13 +48,13 @@ pnpm run deploy
 
 ### 5. Access Your Site
 Your site will be available at:
-`https://YOUR_USERNAME.github.io/tech-club-blog/`
+`https://YOUR_USERNAME.github.io/Blogs/`
 
 ## Important Notes
 
-- The site will be available at `https://YOUR_USERNAME.github.io/tech-club-blog/` (not just `github.io`)
+- The site will be available at `https://YOUR_USERNAME.github.io/Blogs/` (not just `github.io`)
 - Make sure to replace `YOUR_USERNAME` with your actual GitHub username
-- The `basePath` in `next.config.mjs` is set to `/tech-club-blog` for production
+- The `basePath` in `next.config.mjs` is set to `/Blogs` for production
 - If you change the repository name, update the `basePath` in `next.config.mjs`
 
 ## Troubleshooting
