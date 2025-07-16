@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Code2, Github, Twitter, Linkedin, Mail } from "lucide-react"
+import Image from "next/image"
 
 export function Footer() {
   return (
@@ -9,8 +10,8 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
-              <Code2 className="h-8 w-8 text-blue-400" />
-              <span className="text-xl font-bold">TechClub</span>
+              <Image src="/developers-club-logo.png" alt="Developers Club Logo" width={32} height={32} />
+              <span className="text-xl font-bold">Developers Club</span>
             </Link>
             <p className="text-gray-400 max-w-xs">
               Empowering the next generation of tech innovators through knowledge sharing and community building.
@@ -115,7 +116,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} TechClub. All rights reserved. Built with ❤️ by our community.</p>
+          <p>&copy; {new Date().getFullYear()} Developers Club. All rights reserved.</p>
         </div>
       </div>
     </footer>

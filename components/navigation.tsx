@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Menu, Search, Code2 } from "lucide-react"
+import Image from "next/image"
 
 const navigation = [
   {
@@ -31,8 +32,8 @@ export function Navigation() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Code2 className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold">TechClub</span>
+            <Image src="/developers-club-logo.png" alt="Developers Club Logo" width={32} height={32} />
+            <span className="text-xl font-bold">Developers Club</span>
           </Link>
 
           {/* Desktop Navigation */}

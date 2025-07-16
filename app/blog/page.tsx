@@ -17,7 +17,7 @@ const blogPosts = [
     title: "Getting Started with React",
     excerpt: "Learn the basics of React and build your first component",
     author: {
-      name: "TechClub Team",
+      name: "Developers Club Team",
       avatar: "/placeholder.svg?height=40&width=40",
       role: "Full Stack Developer",
     },
@@ -146,7 +146,7 @@ export default function BlogPage() {
       <section className="bg-white border-b">
         <div className="container mx-auto px-4 py-12">
           <div className="text-center space-y-4">
-            <h1 className="text-4xl lg:text-5xl font-bold">Tech Blog</h1>
+            <h1 className="text-4xl lg:text-5xl font-bold">Developers Blog</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Discover insights, tutorials, and innovations from our community of tech enthusiasts
             </p>

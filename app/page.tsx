@@ -72,7 +72,7 @@ export default function HomePage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <Badge variant="secondary" className="w-fit">
-                  College Tech Club
+                  Developers Club
                 </Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold tracking-tight">
                   Innovate. Learn. <span className="text-blue-600">Create.</span>

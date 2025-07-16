@@ -8,17 +8,17 @@ import { Footer } from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "TechClub - College Technology Blog",
+  title: "Developers Club - College Technology Blog",
   description:
     "Join our community of passionate developers, designers, and tech enthusiasts. Share knowledge, build projects, and shape the future of technology.",
-  keywords: ["technology", "programming", "web development", "college", "tech club", "blog"],
-  authors: [{ name: "TechClub Team" }],
+  keywords: ["technology", "programming", "web development", "college", "developers club", "blog"],
+  authors: [{ name: "Developers Club Team" }],
   openGraph: {
-    title: "TechClub - College Technology Blog",
+    title: "Developers Club - College Technology Blog",
     description: "Join our community of passionate developers, designers, and tech enthusiasts.",
     type: "website",
   },
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({

@@ -38,7 +38,7 @@ Props are used to pass data from parent components to child components.
 
 React provides a powerful foundation for building modern web applications. Start with these basics and gradually explore more advanced concepts.
     `,
-    author: "TechClub Team",
+    author: "Developers Club Team",
     date: "2025-01-15",
     tags: ["React", "JavaScript", "Frontend"]
   },
