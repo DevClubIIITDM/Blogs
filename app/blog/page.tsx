@@ -10,108 +10,38 @@ import { Calendar, Clock, Search, Filter } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
+// Consistent date formatting function
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${month}/${day}/${year}`
+}
+
 // Blog posts data - same as in [slug]/page.tsx
 const blogPosts = [
   {
-    slug: "getting-started-with-react",
-    title: "Getting Started with React",
-    excerpt: "Learn the basics of React and build your first component",
+    slug: "linux-commands",
+    title: "Linux Commands Documentation: Essential Commands for Developers",
+    excerpt: "A comprehensive guide to essential Linux commands that every developer should know. From file management to system administration, master the command line interface.",
     author: {
       name: "Developers Club Team",
       avatar: "/placeholder.svg?height=40&width=40",
-      role: "Full Stack Developer",
+      role: "System Administrator",
     },
-    category: "Web Development",
-    date: "2025-01-15",
-    readTime: "8 min read",
-    image: "/placeholder.svg?height=200&width=400",
+    category: "",
+    date: "2025-01-20",
+    readTime: "25 min read",
+    image: "/linux-commands-blog.png",
     featured: true,
-    tags: ["React", "JavaScript", "Frontend"]
-  },
-  {
-    slug: "ai-in-healthcare",
-    title: "AI in Healthcare: Opportunities & Challenges",
-    excerpt: "Exploring the impact of artificial intelligence on healthcare",
-    author: {
-      name: "Dr. Sarah Johnson",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "AI/ML Engineer",
-    },
-    category: "Machine Learning",
-    date: "2025-01-10",
-    readTime: "12 min read",
-    image: "/placeholder.svg?height=200&width=400",
-    featured: true,
-    tags: ["AI", "Healthcare", "Machine Learning"]
-  },
-  {
-    slug: "cybersecurity-best-practices",
-    title: "Cybersecurity Best Practices for Modern Applications",
-    excerpt: "Learn essential security practices to protect your applications from common vulnerabilities and cyber threats.",
-    author: {
-      name: "Marcus Johnson",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "Security Specialist",
-    },
-    category: "Cybersecurity",
-    date: "2025-01-08",
-    readTime: "10 min read",
-    image: "/placeholder.svg?height=200&width=400",
-    featured: false,
-    tags: ["Security", "Cybersecurity", "Best Practices"]
-  },
-  {
-    slug: "react-native-vs-flutter",
-    title: "React Native vs Flutter: A Comprehensive Comparison",
-    excerpt: "Compare the two leading cross-platform mobile development frameworks and choose the right one for your next project.",
-    author: {
-      name: "Emily Davis",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "Mobile Developer",
-    },
-    category: "Mobile Development",
-    date: "2025-01-05",
-    readTime: "15 min read",
-    image: "/placeholder.svg?height=200&width=400",
-    featured: false,
-    tags: ["React Native", "Flutter", "Mobile Development"]
-  },
-  {
-    slug: "docker-for-development",
-    title: "Getting Started with Docker for Development",
-    excerpt: "Learn how to containerize your applications and streamline your development workflow with Docker.",
-    author: {
-      name: "David Kim",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "DevOps Engineer",
-    },
-    category: "DevOps",
-    date: "2025-01-03",
-    readTime: "11 min read",
-    image: "/placeholder.svg?height=200&width=400",
-    featured: false,
-    tags: ["Docker", "DevOps", "Containerization"]
-  },
-  {
-    slug: "restful-apis-nodejs",
-    title: "Building RESTful APIs with Node.js and Express",
-    excerpt: "Master the fundamentals of API development with Node.js and Express, including authentication and best practices.",
-    author: {
-      name: "Lisa Wang",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "Backend Developer",
-    },
-    category: "Backend Development",
-    date: "2025-01-01",
-    readTime: "9 min read",
-    image: "/placeholder.svg?height=200&width=400",
-    featured: false,
-    tags: ["Node.js", "Express", "API Development"]
-  },
+    tags: ["Linux", "Command Line", "System Administration", "DevOps"]
+  }
 ]
 
 const categories = [
   "All",
+  "System Administration",
   "Web Development",
   "Machine Learning",
   "Cybersecurity",
@@ -211,8 +141,8 @@ export default function BlogPage() {
                       src={post.image || "/placeholder.svg"}
                       alt={post.title}
                       width={400}
-                      height={200}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      height={300}
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <Badge className="absolute top-4 left-4">{post.category}</Badge>
                     {post.featured && (
@@ -246,7 +176,7 @@ export default function BlogPage() {
                     </div>
                     <div className="flex items-center text-sm text-muted-foreground">
                       <Calendar className="h-4 w-4 mr-1" />
-                      {new Date(post.date).toLocaleDateString()}
+                      {formatDate(post.date)}
                     </div>
                   </CardContent>
                 </Card>

@@ -65,6 +65,14 @@ const stats = [
 export default function HomePage() {
   return (
     <div className="min-h-screen">
+      {/* Dynamic gradient background - COMMENTED OUT */}
+      {/* <div className="fixed inset-0 bg-gradient-to-br from-blue-400/20 via-purple-500/20 to-pink-400/20 animate-gradient-xy"></div>
+      <div className="fixed inset-0 bg-gradient-to-tr from-cyan-400/10 via-blue-500/10 to-indigo-500/10 animate-gradient-xy-reverse"></div>
+      
+      <div className="fixed top-20 left-20 w-72 h-72 bg-blue-400/30 rounded-full blur-3xl animate-pulse"></div>
+      <div className="fixed bottom-20 right-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      <div className="fixed top-1/2 left-1/2 w-80 h-80 bg-pink-400/25 rounded-full blur-3xl animate-pulse delay-500"></div> */}
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 lg:py-32">
         <div className="container mx-auto px-4">
@@ -88,9 +96,7 @@ export default function HomePage() {
                     Explore Blog Posts <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="text-lg px-8 bg-transparent">
-                  <Link href="/about">Learn About Us</Link>
-                </Button>
+               
               </div>
             </div>
             <div className="relative">
@@ -123,67 +129,91 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Posts Section */}
-      <section className="py-20 bg-gray-50">
+      {/* About the Club Section */}
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold">Featured Articles</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Discover the latest insights, tutorials, and innovations from our tech community
+          <div className="max-w-3xl mx-auto text-center space-y-4 mb-10">
+            <h2 className="text-3xl lg:text-4xl font-bold">About the Club</h2>
+            <p className="text-xl text-muted-foreground">
+              The Developers Club is a vibrant community of students and professionals passionate about technology, coding, and innovation. We organize workshops, hackathons, and collaborative projects to foster learning and growth. Whether you are a beginner or an expert, you will find a welcoming space to connect, share, and create together.
             </p>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            {featuredPosts.map((post) => (
-              <Card key={post.id} className="group hover:shadow-lg transition-shadow duration-300">
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <Image
-                    src={post.image || "/placeholder.svg"}
-                    alt={post.title}
-                    width={400}
-                    height={200}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <Badge className="absolute top-4 left-4">{post.category}</Badge>
-                </div>
-                <CardHeader>
-                  <CardTitle className="line-clamp-2 group-hover:text-blue-600 transition-colors">
-                    <Link href={`/blog/${post.id}`}>{post.title}</Link>
-                  </CardTitle>
-                  <CardDescription className="line-clamp-3">{post.excerpt}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={post.author.avatar || "/placeholder.svg"} />
-                        <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div className="text-sm">
-                        <div className="font-medium">{post.author.name}</div>
-                        <div className="text-muted-foreground">{post.author.role}</div>
-                      </div>
-                    </div>
-                    <div className="text-sm text-muted-foreground">{post.readTime}</div>
-                  </div>
-                  <div className="flex items-center mt-4 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    {new Date(post.date).toLocaleDateString()}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Button asChild size="lg" variant="outline">
-              <Link href="/blog">
-                View All Posts <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
           </div>
         </div>
       </section>
+
+      {/* About the Website Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center space-y-4 mb-10">
+            <h2 className="text-3xl lg:text-4xl font-bold">About the Website</h2>
+            <p className="text-xl text-muted-foreground">
+              This website is the digital home of the Developers Club. Here, you can explore insightful blog posts, stay updated on upcoming events, and connect with fellow tech enthusiasts. Built with Next.js and modern web technologies, our platform is designed to be fast, accessible, and community-driven.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold">Featured Articles</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Discover the latest insights, tutorials, and innovations from our tech community
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8 mb-12">
+              {featuredPosts.map((post) => (
+                <Card key={post.id} className="group hover:shadow-lg transition-shadow duration-300">
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <Image
+                      src={post.image || "/placeholder.svg"}
+                      alt={post.title}
+                      width={400}
+                      height={200}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <Badge className="absolute top-4 left-4">{post.category}</Badge>
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      <Link href={`/blog/${post.id}`}>{post.title}</Link>
+                    </CardTitle>
+                    <CardDescription className="line-clamp-3">{post.excerpt}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={post.author.avatar || "/placeholder.svg"} />
+                          <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+                        </Avatar>
+                        <div className="text-sm">
+                          <div className="font-medium">{post.author.name}</div>
+                          <div className="text-muted-foreground">{post.author.role}</div>
+                        </div>
+                      </div>
+                      <div className="text-sm text-muted-foreground">{post.readTime}</div>
+                    </div>
+                    <div className="flex items-center mt-4 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {new Date(post.date).toLocaleDateString()}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <Button asChild size="lg" variant="outline">
+                <Link href="/blog">
+                  View All Posts <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>*/}
 
       {/* CTA Section */}
       <section className="py-20 bg-blue-600 text-white">

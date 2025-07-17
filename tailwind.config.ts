@@ -85,11 +85,41 @@ const config: Config = {
   				to: {
   					height: '0'
   				}
+  			},
+  			'gradient-xy': {
+  				'0%, 100%': {
+  					transform: 'translate(0%, 0%)'
+  				},
+  				'25%': {
+  					transform: 'translate(10%, 10%)'
+  				},
+  				'50%': {
+  					transform: 'translate(5%, 15%)'
+  				},
+  				'75%': {
+  					transform: 'translate(-5%, 5%)'
+  				}
+  			},
+  			'gradient-xy-reverse': {
+  				'0%, 100%': {
+  					transform: 'translate(0%, 0%)'
+  				},
+  				'25%': {
+  					transform: 'translate(-10%, -10%)'
+  				},
+  				'50%': {
+  					transform: 'translate(-5%, -15%)'
+  				},
+  				'75%': {
+  					transform: 'translate(5%, -5%)'
+  				}
   			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'gradient-xy': 'gradient-xy 15s ease infinite',
+  			'gradient-xy-reverse': 'gradient-xy-reverse 20s ease infinite'
   		}
   	}
   },
