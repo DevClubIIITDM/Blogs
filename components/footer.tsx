@@ -17,16 +17,16 @@ export function Footer() {
               Empowering the next generation of tech innovators through knowledge sharing and community building.
             </p>
             <div className="flex space-x-4">
-              <Link href="https://github.com/DevClubIIITDM" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <Link href="https://github.com/DevClubIIITDM" className="text-gray-400 hover:text-blue-400 transition-colors" target="_blank" rel="noopener noreferrer">
                 <Github className="h-5 w-5" />
               </Link>
-              <Link href="https://www.instagram.com/dev.club.iiitdm/" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <Link href="https://www.instagram.com/dev.club.iiitdm/" className="text-gray-400 hover:text-blue-400 transition-colors" target="_blank" rel="noopener noreferrer">
                 <Instagram className="h-5 w-5" />
               </Link>
-              <Link href="https://www.linkedin.com/company/developersclub-iiitdm-kancheepuram/posts/?feedView=all" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <Link href="https://www.linkedin.com/company/developersclub-iiitdm-kancheepuram/posts/?feedView=all" className="text-gray-400 hover:text-blue-400 transition-colors" target="_blank" rel="noopener noreferrer">
                 <Linkedin className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-blue-400 transition-colors" target="_blank" rel="noopener noreferrer">
                 <Mail className="h-5 w-5" />
               </Link>
             </div>

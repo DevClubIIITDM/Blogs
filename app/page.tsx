@@ -5,6 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowRight, Calendar, TrendingUp, Users, Code, Zap } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import "@/styles/animations.css"
+import { ScrollReveal } from "@/components/scroll-reveal"
 
 // Mock data for featured posts
 const featuredPosts = [
@@ -64,182 +66,153 @@ const stats = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
-      {/* Dynamic gradient background - COMMENTED OUT */}
-      {/* <div className="fixed inset-0 bg-gradient-to-br from-blue-400/20 via-purple-500/20 to-pink-400/20 animate-gradient-xy"></div>
-      <div className="fixed inset-0 bg-gradient-to-tr from-cyan-400/10 via-blue-500/10 to-indigo-500/10 animate-gradient-xy-reverse"></div>
-      
-      <div className="fixed top-20 left-20 w-72 h-72 bg-blue-400/30 rounded-full blur-3xl animate-pulse"></div>
-      <div className="fixed bottom-20 right-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div className="fixed top-1/2 left-1/2 w-80 h-80 bg-pink-400/25 rounded-full blur-3xl animate-pulse delay-500"></div> */}
-
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="w-fit">
-                  Developers Club
-                </Badge>
-                <h1 className="text-4xl lg:text-6xl font-bold tracking-tight">
-                  Innovate. Learn. <span className="text-blue-600">Create.</span>
-                </h1>
-                <p className="text-xl text-muted-foreground max-w-lg">
-                  Join our community of passionate developers, designers, and tech enthusiasts. Share knowledge, build
-                  projects, and shape the future of technology.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="text-lg px-8">
-                  <Link href="/blog">
-                    Explore Blog Posts <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-               
-              </div>
-            </div>
-            <div className="relative">
-              <Image
-                src="/placeholder.svg?height=500&width=600"
-                alt="Tech innovation illustration"
-                width={600}
-                height={500}
-                className="rounded-2xl shadow-2xl"
-              />
-            </div>
-          </div>
+    <ScrollReveal>
+      <div className="min-h-screen hero-background relative">
+        {/* Background layers */}
+        <div className="nebula"></div>
+        <div className="star-field">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="star"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 4}s`
+              }}
+            />
+          ))}
         </div>
-      </section>
+        <div className="cosmic-dust"></div>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center space-y-2">
-                <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <stat.icon className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="text-3xl font-bold">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        {/* Light beams */}
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
 
-      {/* About the Club Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center space-y-4 mb-10">
-            <h2 className="text-3xl lg:text-4xl font-bold">About the Club</h2>
-            <p className="text-xl text-muted-foreground">
-              The Developers Club is a vibrant community of students and professionals passionate about technology, coding, and innovation. We organize workshops, hackathons, and collaborative projects to foster learning and growth. Whether you are a beginner or an expert, you will find a welcoming space to connect, share, and create together.
-            </p>
-          </div>
-        </div>
-      </section>
+        {/* Animated particles */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="particle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `float ${6 + Math.random() * 4}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 4}s`
+            }}
+          />
+        ))}
 
-      {/* About the Website Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center space-y-4 mb-10">
-            <h2 className="text-3xl lg:text-4xl font-bold">About the Website</h2>
-            <p className="text-xl text-muted-foreground">
-              This website is the digital home of the Developers Club. Here, you can explore insightful blog posts, stay updated on upcoming events, and connect with fellow tech enthusiasts. Built with Next.js and modern web technologies, our platform is designed to be fast, accessible, and community-driven.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 
-        <section className="py-20 bg-gray-50">
+        {/* Hero Section */}
+        <section className="relative py-20 lg:py-32 z-10">
           <div className="container mx-auto px-4">
-            <div className="text-center space-y-4 mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold">Featured Articles</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Discover the latest insights, tutorials, and innovations from our tech community
-              </p>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8 section-animate">
+                <div className="space-y-4">
+                  <Badge variant="secondary" className="w-fit glass-morphism">
+                    Developers Club
+                  </Badge>
+                  <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-white">
+                    Innovate. Learn. <span className="text-shimmer">Create.</span>
+                  </h1>
+                  <p className="text-xl text-white/80 max-w-lg">
+                    Join our community of passionate developers, designers, and tech enthusiasts. Share knowledge, build
+                    projects, and shape the future of technology.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button asChild size="lg" className="text-lg px-8 button-epic">
+                    <Link href="/blog">
+                      Explore Blog Posts <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+              <div className="relative float-element">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-2xl blur-xl"></div>
+                <Image
+                  src="/placeholder.svg?height=500&width=600"
+                  alt="Tech innovation illustration"
+                  width={600}
+                  height={500}
+                  className="relative rounded-2xl shadow-2xl glass-morphism"
+                />
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div className="grid lg:grid-cols-3 gap-8 mb-12">
-              {featuredPosts.map((post) => (
-                <Card key={post.id} className="group hover:shadow-lg transition-shadow duration-300">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <Image
-                      src={post.image || "/placeholder.svg"}
-                      alt={post.title}
-                      width={400}
-                      height={200}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <Badge className="absolute top-4 left-4">{post.category}</Badge>
+        {/* Stats Section */}
+        <section className="py-16 relative z-10">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {stats.map((stat, index) => (
+                <div key={index} className="interactive-card glass-morphism p-6">
+                  <div className="mx-auto w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-4">
+                    <stat.icon className="h-6 w-6 text-white" />
                   </div>
-                  <CardHeader>
-                    <CardTitle className="line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      <Link href={`/blog/${post.id}`}>{post.title}</Link>
-                    </CardTitle>
-                    <CardDescription className="line-clamp-3">{post.excerpt}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={post.author.avatar || "/placeholder.svg"} />
-                          <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="text-sm">
-                          <div className="font-medium">{post.author.name}</div>
-                          <div className="text-muted-foreground">{post.author.role}</div>
-                        </div>
-                      </div>
-                      <div className="text-sm text-muted-foreground">{post.readTime}</div>
-                    </div>
-                    <div className="flex items-center mt-4 text-sm text-muted-foreground">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {new Date(post.date).toLocaleDateString()}
-                    </div>
-                  </CardContent>
-                </Card>
+                  <div className="text-3xl font-bold text-white text-shimmer">{stat.value}</div>
+                  <div className="text-sm text-white/80">{stat.label}</div>
+                </div>
               ))}
             </div>
+          </div>
+        </section>
 
-            <div className="text-center">
-              <Button asChild size="lg" variant="outline">
-                <Link href="/blog">
-                  View All Posts <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+        {/* About the Club Section */}
+        <section className="py-16 relative z-10">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8 glow-card">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">About the Club</h2>
+              <p className="text-xl text-white/80">
+                The Developers Club is a vibrant community of students and professionals passionate about technology, coding, and innovation. We organize workshops, hackathons, and collaborative projects to foster learning and growth. Whether you are a beginner or an expert, you will find a welcoming space to connect, share, and create together.
+              </p>
             </div>
           </div>
-        </section>*/}
+        </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-8">
-            <h2 className="text-3xl lg:text-4xl font-bold">Ready to Share Your Tech Journey?</h2>
-            <p className="text-xl opacity-90">
-              Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
-              beginner or expert, your voice matters.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" variant="secondary" className="text-lg px-8">
-                <Link href="/contact">Submit Your Article</Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
-              >
-                <Link href="/about">Join Our Club</Link>
-              </Button>
+        {/* About the Website Section */}
+        <section className="py-16 relative z-10">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8 glow-card">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">About the Website</h2>
+              <p className="text-xl text-white/80">
+                This website is the digital home of the Developers Club. Here, you can explore insightful blog posts, stay updated on upcoming events, and connect with fellow tech enthusiasts. Built with Next.js and modern web technologies, our platform is designed to be fast, accessible, and community-driven.
+              </p>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-20 relative z-10">
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 glow-card animated-border">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">Ready to Share Your Tech Journey?</h2>
+              <p className="text-xl text-white/80">
+                Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
+                beginner or expert, your voice matters.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="text-lg px-8 button-epic pulse-glow">
+                  <Link href="/contact">Submit Your Article</Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  className="text-lg px-8 button-epic"
+                >
+                  <Link href="https://developersclubiiitdm.vercel.app/home" target="_blank" rel="noopener noreferrer">
+                    Join Our Club
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </ScrollReveal>
   )
 }
