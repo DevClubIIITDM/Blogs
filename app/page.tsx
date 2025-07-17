@@ -212,93 +212,33 @@ export default function HomePage() {
           </div>
         </section>
 
-      {/* 
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center space-y-4 mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold">Featured Articles</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Discover the latest insights, tutorials, and innovations from our tech community
+        {/* CTA Section (final) */}
+        <section className="py-20 relative z-10">
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 glow-card animated-border">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">Ready to Share Your Tech Journey?</h2>
+              <p className="text-xl text-white/80">
+                Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
+                beginner or expert, your voice matters.
               </p>
-            </div>
-
-            <div className="grid lg:grid-cols-3 gap-8 mb-12">
-              {featuredPosts.map((post) => (
-                <Card key={post.id} className="group hover:shadow-lg transition-shadow duration-300">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <Image
-                      src={post.image || "/placeholder.svg"}
-                      alt={post.title}
-                      width={400}
-                      height={200}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <Badge className="absolute top-4 left-4">{post.category}</Badge>
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      <Link href={`/blog/${post.id}`}>{post.title}</Link>
-                    </CardTitle>
-                    <CardDescription className="line-clamp-3">{post.excerpt}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={post.author.avatar || "/placeholder.svg"} />
-                          <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="text-sm">
-                          <div className="font-medium">{post.author.name}</div>
-                          <div className="text-muted-foreground">{post.author.role}</div>
-                        </div>
-                      </div>
-                      <div className="text-sm text-muted-foreground">{post.readTime}</div>
-                    </div>
-                    <div className="flex items-center mt-4 text-sm text-muted-foreground">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {new Date(post.date).toLocaleDateString()}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Button asChild size="lg" variant="outline">
-                <Link href="/blog">
-                  View All Posts <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="text-lg px-8 button-epic pulse-glow">
+                  <Link href="/contact">Submit Your Article</Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  className="text-lg px-8 button-epic"
+                >
+                  <Link href="https://developersclubiiitdm.vercel.app/home" target="_blank" rel="noopener noreferrer">
+                    Join Our Club
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
-        </section>*/}
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-8">
-            <h2 className="text-3xl lg:text-4xl font-bold">Ready to Share Your Tech Journey?</h2>
-            <p className="text-xl opacity-90">
-              Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
-              beginner or expert, your voice matters.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" variant="secondary" className="text-lg px-8">
-                <Link href="/contact">Submit Your Article</Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
-              >
-                <Link href="/about">Join Our Club</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </ScrollReveal>
   )
 }
