@@ -150,7 +150,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
-                <div key={index} className="interactive-card glass-morphism p-6">
+                <div key={index} className="interactive-card glass-morphism p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
                   <div className="mx-auto w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-4">
                     <stat.icon className="h-6 w-6 text-white" />
                   </div>
@@ -165,7 +165,7 @@ export default function HomePage() {
         {/* About the Club Section */}
         <section className="py-16 relative z-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8 glow-card">
+            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8 glow-card animated-border hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
               <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">About the Club</h2>
               <p className="text-xl text-white/80">
                 The Developers Club is a vibrant community of students and professionals passionate about technology, coding, and innovation. We organize workshops, hackathons, and collaborative projects to foster learning and growth. Whether you are a beginner or an expert, you will find a welcoming space to connect, share, and create together.
@@ -175,9 +175,9 @@ export default function HomePage() {
         </section>
 
         {/* About the Website Section */}
-        <section className="py-16 relative z-10">
+        <section className="py-20 relative z-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8 glow-card">
+            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 glow-card animated-border hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] text-center">
               <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">About the Website</h2>
               <p className="text-xl text-white/80">
                 This website is the digital home of the Developers Club. Here, you can explore insightful blog posts, stay updated on upcoming events, and connect with fellow tech enthusiasts. Built with Next.js and modern web technologies, our platform is designed to be fast, accessible, and community-driven.
@@ -187,7 +187,7 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section (from incoming branch) */}
-        <section className="py-20 bg-blue-600 text-white">
+        {/*<section className="py-20 bg-blue-600 text-white">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-3xl mx-auto space-y-8">
               <h2 className="text-3xl lg:text-4xl font-bold">Ready to Share Your Tech Journey?</h2>
@@ -210,7 +210,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </section>
+        </section>*/}
 
         {/* CTA Section (final) */}
         <section className="py-20 relative z-10">
@@ -232,6 +232,76 @@ export default function HomePage() {
                 >
                   <Link href="https://developersclubiiitdm.vercel.app/home" target="_blank" rel="noopener noreferrer">
                     Join Our Club
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Write Blog CTA Section */}
+        <section className="py-20 relative z-10">
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 glow-card animated-border hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <svg 
+                    className="w-8 h-8 text-white" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                  </svg>
+                </div>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">Got Amazing Tech Insights to Share?</h2>
+              <p className="text-xl text-white/80">
+                Your knowledge could inspire countless developers! Share your experiences, tutorials, and tech discoveries. 
+                Sign in now to become a valued contributor to our growing tech community.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="text-lg px-8 button-epic pulse-glow group">
+                  <Link href="/api/auth/signin" className="flex items-center gap-2">
+                    Sign In to Contribute
+                    <svg 
+                      className="w-5 h-5 transform transition-transform group-hover:translate-x-1" 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  className="text-lg px-8 button-epic"
+                >
+                  <Link href="/blog" className="flex items-center gap-2">
+                    Explore Articles
+                    <svg 
+                      className="w-5 h-5" 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                    </svg>
                   </Link>
                 </Button>
               </div>

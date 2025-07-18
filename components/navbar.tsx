@@ -1,116 +1,315 @@
-'use client'
+"use client"
 
+import { useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Input } from "@/components/ui/input"
+import { Menu, Search } from "lucide-react"
 import Image from "next/image"
-import { useState, useEffect } from "react"
-import { Menu, X } from "lucide-react"
+import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
+import { cn } from "@/lib/utils"
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/achievements", label: "Achievements" },
-  { href: "/events", label: "Events" },
-  { href: "/projects", label: "Projects" },
-  { href: "/team", label: "Team" },
-  { href: "/open-source", label: "Open-Source" },
-  { href: "/contact", label: "Contact" }
-]
+const navigation = [
+  {
+    name: "Home",
+    href: "/",
+  },
+  {
+    name: "Blog",
+    href: "/blog",
+  },
+  {
+    name: "Contact",
+    href: "/contact",
+  },
+];
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const { isSignedIn } = useUser()
+  const pathname = usePathname()
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0)
+  const isActivePath = (path: string) => {
+    if (path === '/') {
+      return pathname === path
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    return pathname.startsWith(path)
+  }
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'glass-morphism backdrop-blur-xl py-2' : 'bg-transparent py-4'
-    }`}>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <style jsx global>{`
+        @keyframes textShimmer {
+          0% { color: #4f46e5; }
+          25% { color: #6366f1; }
+          50% { color: #8b5cf6; }
+          75% { color: #6366f1; }
+          100% { color: #4f46e5; }
+        }
+        .text-shimmer-hover {
+          color: #3b82f6;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+        .text-shimmer-hover:hover {
+          animation: textShimmer 3s linear infinite;
+          text-shadow: 
+            0 0 10px rgba(99, 102, 241, 0.3),
+            0 0 20px rgba(99, 102, 241, 0.2),
+            0 0 30px rgba(99, 102, 241, 0.1);
+        }
+        .nav-link {
+          position: relative;
+          padding: 0.5rem 1rem;
+          border-radius: 9999px;
+          color: #64748b;
+          text-decoration: none;
+        }
+        .nav-link span {
+          display: inline-block;
+          transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .nav-link:hover span {
+          transform: scale(1.1);
+          color: #4f46e5;
+        }
+        .nav-link.active {
+          color: #4f46e5;
+          background: rgba(30, 58, 138, 0.15);
+        }
+        .nav-link.active span {
+          transform: scale(1);
+        }
+        
+        /* Mobile nav specific styles */
+        .mobile-nav-link {
+          padding: 0.75rem 1rem;
+          border-radius: 9999px;
+          color: #64748b;
+          text-decoration: none;
+        }
+        .mobile-nav-link span {
+          display: inline-block;
+          transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .mobile-nav-link:hover span {
+          transform: scale(1.1);
+          color: #4f46e5;
+        }
+        .mobile-nav-link.active {
+          color: #4f46e5;
+          background: rgba(30, 58, 138, 0.15);
+        }
+        .mobile-nav-link.active span {
+          transform: scale(1);
+        }
+
+        .button-epic {
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+        }
+        .button-epic:hover {
+          transform: translateY(-2px);
+        }
+        .button-epic::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+          );
+          transition: 0.5s;
+        }
+        .button-epic:hover::before {
+          left: 100%;
+        }
+
+        @keyframes pulse-glow {
+          0% {
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5),
+                      0 0 10px rgba(139, 92, 246, 0.3);
+          }
+          50% {
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.7),
+                      0 0 20px rgba(139, 92, 246, 0.5),
+                      0 0 30px rgba(139, 92, 246, 0.3);
+          }
+          100% {
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5),
+                      0 0 10px rgba(139, 92, 246, 0.3);
+          }
+        }
+
+        .pulse-glow {
+          animation: pulse-glow 2s infinite;
+        }
+
+        /* Auth button styles */
+        .auth-button {
+          font-weight: 500;
+          padding: 0.5rem 1.25rem;
+          border-radius: 0.5rem;
+        }
+
+        /* Remove write-prompt styles */
+      `}</style>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 logo-shine">
-            <Image 
-              src="/developers-club-logo.png" 
-              alt="Developers Club Logo" 
-              width={40} 
-              height={40}
-              className="hover:scale-110 transition-transform"
-            />
-            <span className={`text-xl font-bold ${
-              isScrolled ? 'text-white' : 'text-white text-shimmer'
-            }`}>
+          <Link 
+            href="/" 
+            className="group flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
+          >
+            <div className="relative">
+              <Image 
+                src="/developers-club-logo.png" 
+                alt="Developers Club Logo" 
+                width={32} 
+                height={32}
+                className="transition-all duration-300"
+              />
+              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-lg transform scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
+            <span className="text-xl font-bold text-shimmer-hover">
               Developers Club
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  isScrolled
-                    ? 'text-white/80 hover:text-white hover:bg-white/10'
-                    : 'text-white/90 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="https://developersclubiiitdm.vercel.app/home"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="nav-button ml-4 px-6 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
-            >
-              Join Club
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 glass-morphism rounded-lg p-4 slide-in-from-top">
-            <div className="flex flex-col space-y-2">
-              {navLinks.map((link) => (
+          <nav className="hidden md:flex items-center space-x-2">
+            {navigation.map((item) => {
+              const isActive = isActivePath(item.href)
+              return (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="nav-link px-4 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "nav-link no-underline",
+                    isActive && "active"
+                  )}
                 >
-                  {link.label}
+                  <span>{item.name}</span>
                 </Link>
-              ))}
-              <Link
-                href="https://developersclubiiitdm.vercel.app/home"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-button px-4 py-2 rounded-lg text-center bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-300"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Join Club
-              </Link>
+              )
+            })}
+          </nav>
+
+          {/* Search, Auth, and Mobile Menu */}
+          <div className="flex items-center space-x-4">
+            <div className="hidden sm:flex items-center space-x-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search articles..." className="pl-10 w-64" />
+              </div>
             </div>
+
+            {/* Authentication and Write for Us */}
+            {isSignedIn ? (
+              <>
+                <Button 
+                  asChild 
+                  className="hidden md:inline-flex button-epic"
+                >
+                  <Link href="/contact" className="no-underline">Write for Us</Link>
+                </Button>
+                <UserButton
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-8 h-8 ring-2 ring-blue-600/20 hover:ring-blue-600 transition-all duration-300",
+                    },
+                  }}
+                />
+              </>
+            ) : (
+              <div className="flex items-center">
+                <div className="flex items-center space-x-2">
+                  <SignInButton mode="modal">
+                    <Button variant="ghost" className="button-epic auth-button">
+                      Login
+                      <svg 
+                        className="w-5 h-5 ml-2" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      >
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/>
+                        <line x1="15" y1="12" x2="3" y2="12"/>
+                      </svg>
+                    </Button>
+                  </SignInButton>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Menu */}
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="hover:bg-blue-600/10 transition-colors duration-200"
+                >
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80">
+                <div className="flex flex-col space-y-6 mt-8">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input placeholder="Search articles..." className="pl-10" />
+                  </div>
+
+                  <nav className="flex flex-col space-y-1">
+                    {navigation.map((item) => {
+                      const isActive = isActivePath(item.href)
+                      return (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className={cn(
+                            "mobile-nav-link no-underline",
+                            isActive && "active"
+                          )}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <span>{item.name}</span>
+                        </Link>
+                      )
+                    })}
+                  </nav>
+
+                  {isSignedIn && (
+                    <Button 
+                      asChild 
+                      className="w-full button-epic"
+                    >
+                      <Link href="/contact" onClick={() => setIsOpen(false)} className="no-underline">
+                        Write for Us
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
-        )}
+        </div>
       </div>
-    </nav>
+    </header>
   )
 } 
