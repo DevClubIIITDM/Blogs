@@ -39,7 +39,7 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-white">
       <style jsx global>{`
         @keyframes textShimmer {
           0% { color: #4f46e5; }
@@ -171,9 +171,9 @@ export function Navbar() {
             className="group flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
           >
             <div className="relative">
-              <Image 
-                src="/developers-club-logo.png" 
-                alt="Developers Club Logo" 
+            <Image 
+              src="/developers-club-logo.png" 
+              alt="Developers Club Logo" 
                 width={32} 
                 height={32}
                 className="transition-all duration-300"
@@ -186,7 +186,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-2">
+          <nav className="hidden md:flex items-center space-x-4 ml-8">
             {navigation.map((item) => {
               const isActive = isActivePath(item.href)
               return (
@@ -204,15 +204,8 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Search, Auth, and Mobile Menu */}
+          {/* Auth and Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <div className="hidden sm:flex items-center space-x-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search articles..." className="pl-10 w-64" />
-              </div>
-            </div>
-
             {/* Authentication and Write for Us */}
             {isSignedIn ? (
               <>
@@ -270,11 +263,6 @@ export function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-6 mt-8">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search articles..." className="pl-10" />
-                  </div>
-
                   <nav className="flex flex-col space-y-1">
                     {navigation.map((item) => {
                       const isActive = isActivePath(item.href)
