@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -26,10 +26,238 @@ const navigation = [
   },
 ];
 
+// Client-only authentication component to prevent hydration mismatches
+function AuthSection() {
+  const { isSignedIn } = useUser()
+  const [isMounted, setIsMounted] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  const isActivePath = (path: string) => {
+    if (path === '/') {
+      return pathname === path
+    }
+    return pathname.startsWith(path)
+  }
+
+  if (!isMounted) {
+    return (
+      <div className="flex items-center">
+        <div className="w-24 h-10 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    )
+  }
+
+  if (isSignedIn) {
+    return (
+      <UserButton
+        afterSignOutUrl="/"
+        appearance={{
+          elements: {
+            avatarBox: "w-8 h-8 ring-2 ring-blue-600/20 hover:ring-blue-600 transition-all duration-300",
+          },
+        }}
+      />
+    )
+  }
+
+  return (
+    <div className="flex items-center">
+      <div className="flex items-center space-x-2">
+        <SignInButton mode="modal">
+          <Button variant="ghost" className="button-epic auth-button">
+            Login
+            <svg 
+              className="w-5 h-5 ml-2" 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+          </Button>
+        </SignInButton>
+      </div>
+    </div>
+  )
+}
+
+// Client-only navigation component for signed-in users
+function WriteForUsLink() {
+  const { isSignedIn } = useUser()
+  const [isMounted, setIsMounted] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  const isActivePath = (path: string) => {
+    if (path === '/') {
+      return pathname === path
+    }
+    return pathname.startsWith(path)
+  }
+
+  if (!isMounted || !isSignedIn) {
+    return null
+  }
+
+  return (
+    <Link
+      href="/write-for-us"
+      className={cn(
+        "nav-link no-underline",
+        isActivePath("/write-for-us") && "active"
+      )}
+    >
+      <span>Write for Us</span>
+    </Link>
+  )
+}
+
+// Client-only admin navigation component
+function AdminLink() {
+  const { user, isSignedIn } = useUser()
+  const [isMounted, setIsMounted] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  const isActivePath = (path: string) => {
+    if (path === '/') {
+      return pathname === path
+    }
+    return pathname.startsWith(path)
+  }
+
+  if (!isMounted || !isSignedIn) {
+    return null
+  }
+
+  const email = user?.emailAddresses?.[0]?.emailAddress
+  if (email !== 'devclub@iiitdm.ac.in') {
+    return null
+  }
+
+  return (
+    <Link
+      href="/admin"
+      className={cn(
+        "nav-link no-underline",
+        isActivePath("/admin") && "active"
+      )}
+    >
+      <span>Admin</span>
+    </Link>
+  )
+}
+
+// Client-only mobile navigation component for signed-in users
+function WriteForUsMobileLink({ onClose }: { onClose: () => void }) {
+  const { isSignedIn } = useUser()
+  const [isMounted, setIsMounted] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  const isActivePath = (path: string) => {
+    if (path === '/') {
+      return pathname === path
+    }
+    return pathname.startsWith(path)
+  }
+
+  if (!isMounted || !isSignedIn) {
+    return null
+  }
+
+  return (
+    <Link
+      href="/write-for-us"
+      className={cn(
+        "mobile-nav-link no-underline",
+        isActivePath("/write-for-us") && "active"
+      )}
+      onClick={onClose}
+    >
+      <span>Write for Us</span>
+    </Link>
+  )
+}
+
+// Client-only mobile admin navigation component
+function AdminMobileLink({ onClose }: { onClose: () => void }) {
+  const { user, isSignedIn } = useUser()
+  const [isMounted, setIsMounted] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  const isActivePath = (path: string) => {
+    if (path === '/') {
+      return pathname === path
+    }
+    return pathname.startsWith(path)
+  }
+
+  if (!isMounted || !isSignedIn) {
+    return null
+  }
+
+  const email = user?.emailAddresses?.[0]?.emailAddress
+  if (email !== 'devclub@iiitdm.ac.in') {
+    return null
+  }
+
+  return (
+    <Link
+      href="/admin"
+      className={cn(
+        "mobile-nav-link no-underline",
+        isActivePath("/admin") && "active"
+      )}
+      onClick={onClose}
+    >
+      <span>Admin</span>
+    </Link>
+  )
+}
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const { isSignedIn } = useUser()
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
+
+  useEffect(() => {
+    setIsMounted(true)
+    
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    // Set initial scroll state
+    handleScroll()
+    
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const isActivePath = (path: string) => {
     if (path === '/') {
@@ -39,7 +267,12 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white">
+    <header className={cn(
+      "sticky top-0 z-50 w-full border-b transition-all duration-300",
+      isMounted && isScrolled 
+        ? "bg-white/95 backdrop-blur-md shadow-lg" 
+        : "bg-white"
+    )}>
       <style jsx global>{`
         @keyframes textShimmer {
           0% { color: #4f46e5; }
@@ -202,53 +435,18 @@ export function Navbar() {
                 </Link>
               )
             })}
+            {isMounted && (
+              <>
+                <WriteForUsLink />
+                <AdminLink />
+              </>
+            )}
           </nav>
 
           {/* Auth and Mobile Menu */}
           <div className="flex items-center space-x-4">
-            {/* Authentication and Write for Us */}
-            {isSignedIn ? (
-              <>
-                <Button 
-                  asChild 
-                  className="hidden md:inline-flex button-epic"
-                >
-                  <Link href="/contact" className="no-underline">Write for Us</Link>
-                </Button>
-                <UserButton
-                  afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-8 h-8 ring-2 ring-blue-600/20 hover:ring-blue-600 transition-all duration-300",
-                    },
-                  }}
-                />
-              </>
-            ) : (
-              <div className="flex items-center">
-                <div className="flex items-center space-x-2">
-                  <SignInButton mode="modal">
-                    <Button variant="ghost" className="button-epic auth-button">
-                      Login
-                      <svg 
-                        className="w-5 h-5 ml-2" 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                      >
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                        <polyline points="10 17 15 12 10 7"/>
-                        <line x1="15" y1="12" x2="3" y2="12"/>
-                      </svg>
-                    </Button>
-                  </SignInButton>
-                </div>
-              </div>
-            )}
+            {/* Authentication */}
+            <AuthSection />
 
             {/* Mobile Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -280,18 +478,14 @@ export function Navbar() {
                         </Link>
                       )
                     })}
+                    {isMounted && (
+                      <>
+                        <AuthSection />
+                        <WriteForUsMobileLink onClose={() => setIsOpen(false)} />
+                        <AdminMobileLink onClose={() => setIsOpen(false)} />
+                      </>
+                    )}
                   </nav>
-
-                  {isSignedIn && (
-                    <Button 
-                      asChild 
-                      className="w-full button-epic"
-                    >
-                      <Link href="/contact" onClick={() => setIsOpen(false)} className="no-underline">
-                        Write for Us
-                      </Link>
-                    </Button>
-                  )}
                 </div>
               </SheetContent>
             </Sheet>

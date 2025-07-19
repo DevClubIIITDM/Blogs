@@ -10,6 +10,7 @@ import Image from "next/image"
 import "@/styles/animations.css"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { useUser } from "@clerk/nextjs"
+import { useEffect, useState } from "react"
 
 // Mock data for featured posts
 const featuredPosts = [
@@ -67,13 +68,31 @@ const stats = [
   { icon: Zap, label: "Tech Events", value: "25+" },
 ]
 
-export default function HomePage() {
-  const { isSignedIn } = useUser()
+// Client-side only component for animated background elements
+function AnimatedBackground() {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+  return (
+      <>
+        <div className="nebula"></div>
+        <div className="star-field"></div>
+        <div className="cosmic-dust"></div>
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
+        <div className="light-beam"></div>
+      </>
+    )
+  }
 
   return (
-    <ScrollReveal>
-      <div className="min-h-screen hero-background relative">
-        {/* Background layers */}
+    <>
         <div className="nebula"></div>
         <div className="star-field">
           {[...Array(50)].map((_, i) => (
@@ -110,6 +129,18 @@ export default function HomePage() {
             }}
           />
         ))}
+    </>
+  )
+}
+
+export default function HomePage() {
+  const { isSignedIn } = useUser()
+
+  return (
+    <ScrollReveal>
+      <div className="min-h-screen hero-background relative">
+        {/* Background layers */}
+        <AnimatedBackground />
 
         {/* Hero Section */}
         <section className="relative py-20 lg:py-32 z-10">
@@ -134,6 +165,13 @@ export default function HomePage() {
                       Explore Blog Posts <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
+                  {isSignedIn && (
+                    <Button asChild size="lg" variant="outline" className="text-lg px-8 border-white/20 text-white hover:bg-white/10">
+                      <Link href="/write-for-us">
+                        Write for Us
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </div>
               <div className="relative float-element">
@@ -228,7 +266,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="text-lg px-8 button-epic pulse-glow">
-                  <Link href="/contact">Submit Your Article</Link>
+                  <Link href="/write-for-us">Submit Your Article</Link>
                 </Button>
                 <Button
                   asChild

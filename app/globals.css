@@ -92,3 +92,112 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Markdown Content Styles */
+.prose {
+  color: inherit;
+}
+
+.prose h1 {
+  @apply text-3xl font-bold text-white mb-6 mt-8;
+}
+
+.prose h2 {
+  @apply text-2xl font-bold text-white mb-4 mt-6;
+}
+
+.prose h3 {
+  @apply text-xl font-bold text-white mb-3 mt-5;
+}
+
+.prose h4 {
+  @apply text-lg font-bold text-white mb-2 mt-4;
+}
+
+.prose h5 {
+  @apply text-base font-bold text-white mb-2 mt-4;
+}
+
+.prose h6 {
+  @apply text-sm font-bold text-white mb-2 mt-4;
+}
+
+.prose p {
+  @apply text-white/90 mb-4 leading-relaxed;
+}
+
+.prose ul {
+  @apply text-white/90 mb-4 list-disc list-inside;
+}
+
+.prose ol {
+  @apply text-white/90 mb-4 list-decimal list-inside;
+}
+
+.prose li {
+  @apply mb-1;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-blue-500/50 pl-4 py-2 my-6 bg-white/5 rounded-r-lg;
+}
+
+.prose blockquote p {
+  @apply text-white/80 italic;
+}
+
+.prose code {
+  @apply bg-white/10 text-blue-300 px-2 py-1 rounded text-sm font-mono;
+}
+
+.prose pre {
+  @apply bg-gray-900/50 p-4 rounded-lg overflow-x-auto my-6 border border-white/10;
+}
+
+.prose pre code {
+  @apply bg-transparent text-white/90 p-0;
+}
+
+.prose a {
+  @apply text-blue-400 hover:text-blue-300 underline;
+}
+
+.prose strong {
+  @apply font-bold text-white;
+}
+
+.prose em {
+  @apply italic text-white/90;
+}
+
+.prose table {
+  @apply w-full border-collapse my-6;
+}
+
+.prose th {
+  @apply bg-white/10 text-white font-bold p-3 text-left border border-white/20;
+}
+
+.prose td {
+  @apply p-3 border border-white/20 text-white/90;
+}
+
+.prose tr:nth-child(even) {
+  @apply bg-white/5;
+}
+
+.prose img {
+  @apply max-w-full h-auto rounded-lg my-6;
+}
+
+.prose hr {
+  @apply border-white/20 my-8;
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
