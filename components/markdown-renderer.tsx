@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
@@ -74,12 +74,12 @@ export function MarkdownRenderer({ content, className = "" }: MarkdownRendererPr
 
 // Enhanced markdown renderer with syntax highlighting
 export function EnhancedMarkdownRenderer({ content, className = "" }: MarkdownRendererProps) {
-  const [renderedContent, setRenderedContent] = useState<JSX.Element[]>([])
+  const [renderedContent, setRenderedContent] = useState<React.ReactElement[]>([])
 
   useEffect(() => {
     const renderMarkdown = () => {
       const lines = content.split('\n')
-      const elements: JSX.Element[] = []
+      const elements: React.ReactElement[] = []
       let currentList: string[] = []
       let inCodeBlock = false
       let codeBlockContent = ''

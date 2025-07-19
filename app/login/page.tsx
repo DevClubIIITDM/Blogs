@@ -2,7 +2,6 @@
 
 import { SignIn } from "@clerk/nextjs"
 import { useState } from "react"
-import { EmailDomainValidator } from "@/components/email-domain-validator"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -20,7 +19,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-      <EmailDomainValidator />
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">

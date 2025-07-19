@@ -437,7 +437,7 @@ export default function AdminPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-white font-semibold mb-1">{article.title}</h3>
-                          <p className="text-white/60 text-sm mb-2">By: {article.submittedBy || article.author}</p>
+                          <p className="text-white/60 text-sm mb-2">By: {(article as any).submittedBy || article.author || 'Unknown'}</p>
                           <p className="text-white/70 text-sm mb-2">{article.excerpt}</p>
                           <div className="flex items-center gap-2 mb-3">
                             <Badge variant="outline" className="text-xs border-white/20 text-white/80">
@@ -556,7 +556,7 @@ export default function AdminPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-white font-semibold mb-1">{article.title}</h3>
-                          <p className="text-white/60 text-sm mb-2">By: {article.submittedBy}</p>
+                          <p className="text-white/60 text-sm mb-2">By: {(article as any).submittedBy || article.author || 'Unknown'}</p>
                           <p className="text-white/70 text-sm mb-2">{article.excerpt}</p>
                           <div className="flex items-center gap-2 mb-3">
                             <Badge variant="outline" className="text-xs border-white/20 text-white/80">
