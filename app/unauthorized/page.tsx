@@ -8,12 +8,12 @@ export default function UnauthorizedPage() {
   const { user } = useUser()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+    <div className="min-h-screen hero-background flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
             <svg 
-              className="w-8 h-8 text-red-600" 
+              className="w-8 h-8 text-red-400" 
               xmlns="http://www.w3.org/2000/svg" 
               viewBox="0 0 24 24" 
               fill="none" 
@@ -27,32 +27,32 @@ export default function UnauthorizedPage() {
               <line x1="9" y1="9" x2="15" y2="15"/>
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             Access Restricted
           </h1>
-          <p className="text-gray-600 mb-4">
+          <p className="text-white/80 mb-4">
             This platform is only available to IIITDM students and staff.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-800">
+        <div className="glass-morphism p-6 space-y-4">
+          <div className="p-4 bg-red-500/10 border border-red-400/30 rounded-lg">
+            <p className="text-sm text-red-300">
               <strong>Current Email:</strong> {user?.emailAddresses?.[0]?.emailAddress || 'Unknown'}
             </p>
-            <p className="text-sm text-red-800 mt-2">
+            <p className="text-sm text-red-300 mt-2">
               Only @iiitdm.ac.in email addresses are allowed to access this platform.
             </p>
           </div>
 
           <div className="space-y-3">
             <SignOutButton>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
                 Sign Out
               </Button>
             </SignOutButton>
             
-            <Button asChild className="w-full">
+            <Button asChild className="w-full button-epic">
               <Link href="/">
                 Return to Home
               </Link>
@@ -61,7 +61,7 @@ export default function UnauthorizedPage() {
         </div>
 
         <div className="text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-white/60">
             If you believe this is an error, please contact your administrator
           </p>
         </div>

@@ -35,54 +35,37 @@
 
 /* Enhanced Background Effects */
 .hero-background {
-  background: linear-gradient(
-    125deg,
-    #1a0b2e 0%,
-    #1e1554 25%,
-    #203a43 50%,
-    #2c5364 75%,
-    #16222a 100%
-  );
-  background-size: 200% 200%;
-  animation: gradient-shift 15s ease infinite;
+  background: linear-gradient(115deg, #2b2369 0%, #161823 45%, #201050 100%);
   position: relative;
   overflow: hidden;
 }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Glowy animated background for hero sections */
+.hero-section {
+  background: linear-gradient(135deg, #292c4f 40%, #20285b 110%);
+  border-radius: 16px;
+  box-shadow: 0 6px 28px #431ae455, 0 1px 1px #fff1;
+  overflow: hidden;
+  position: relative;
 }
 
-/* Animated gradient orbs */
-.hero-background::before {
-  content: '';
+.hero-section::before {
+  content: "";
   position: absolute;
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-  background: 
-    radial-gradient(circle at 25% 25%, rgba(45, 97, 255, 0.2) 0%, transparent 40%),
-    radial-gradient(circle at 75% 75%, rgba(255, 64, 129, 0.2) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(130, 87, 229, 0.2) 0%, transparent 50%);
-  animation: rotate 30s linear infinite;
-  z-index: 1;
+  left: 60%;
+  top: 40%;
+  width: 420px;
+  height: 320px;
+  border-radius: 55% 45% 37% 63%;
+  background: radial-gradient(circle at 60% 60%, #12d8fa44, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+  animation: floatingGlow 7s ease-in-out infinite alternate;
 }
 
-/* Glowing mesh */
-.hero-background::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(to right, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  mask-image: radial-gradient(circle at center, black, transparent 80%);
-  animation: pulse-bg 4s ease-in-out infinite;
-  z-index: 2;
+@keyframes floatingGlow {
+  0% { transform: scale(1) translateY(-12px); opacity: 0.88; }
+  100% { transform: scale(1.07) translateY(7px); opacity: 1; }
 }
 
 /* Floating light beams */
@@ -151,23 +134,18 @@
 
 /* Enhanced Glass Effect */
 .glass-morphism {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
-    0 8px 32px 0 rgba(31, 38, 135, 0.2),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
+  background: rgba(36, 34, 66, 0.75);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 32px #5c42ff34;
+  border-radius: 16px;
   transition: all 0.3s ease;
 }
 
 .glass-morphism:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 12px 40px 0 rgba(31, 38, 135, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-    0 0 20px rgba(130, 87, 229, 0.3);
+  background: rgba(36, 34, 66, 0.85);
+  box-shadow: 0 8px 40px #5c42ff50;
 }
 
 /* Shimmering Text Effect */
@@ -175,9 +153,9 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(130, 87, 229, 0.8) 25%,
-    rgba(255, 64, 129, 0.8) 50%,
-    rgba(88, 133, 255, 0.8) 75%,
+    rgba(92, 66, 255, 0.8) 25%,
+    rgba(18, 216, 250, 0.8) 50%,
+    rgba(92, 66, 255, 0.8) 75%,
     transparent 100%
   );
   background-size: 200% 100%;
@@ -250,15 +228,15 @@
 .button-epic {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(45deg, #0ea5e9, #6366f1);
+  background: linear-gradient(90deg, #5c42ff 60%, #12d8fa);
   border: none;
   color: white;
   padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: bold;
+  border-radius: 32px;
+  font-weight: 700;
   transition: all 0.3s ease;
-  transform-style: preserve-3d;
-  perspective: 1000px;
+  box-shadow: 0 4px 22px #5c42ff77;
+  letter-spacing: 0.02em;
 }
 
 .button-epic::before {
@@ -279,10 +257,9 @@
 }
 
 .button-epic:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 
-    0 10px 20px rgba(0, 0, 0, 0.2),
-    0 0 20px rgba(59, 130, 246, 0.4);
+  filter: brightness(1.10);
+  box-shadow: 0 12px 42px #12d8faa1;
+  transform: scale(1.035) translateY(-2px);
 }
 
 .button-epic:hover::before {
@@ -290,7 +267,8 @@
 }
 
 .button-epic:active {
-  transform: translateY(2px);
+  transform: translateY(0);
+  box-shadow: 0 4px 22px #5c42ff77;
 }
 
 /* Section Animation */

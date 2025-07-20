@@ -240,7 +240,7 @@ export default function AdminPage() {
       <BackgroundWrapper>
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardContent className="pt-6">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
                 <p className="text-white/80">Verifying admin access...</p>
@@ -258,7 +258,7 @@ export default function AdminPage() {
       <BackgroundWrapper>
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-white mb-4">
                   Admin Access Required
@@ -349,7 +349,7 @@ export default function AdminPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {mockStats.map((stat, index) => (
-                <Card key={index} className="glass-morphism border-white/20">
+                <Card key={index} className="glass-morphism">
                   <CardContent className="pt-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -364,7 +364,7 @@ export default function AdminPage() {
             </div>
 
             {/* Recent Activity */}
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-white">Recent Activity</CardTitle>
                 <CardDescription className="text-white/80">
@@ -405,7 +405,7 @@ export default function AdminPage() {
       {activeTab === "articles" && (
         <section className="relative z-10">
           <div className="container mx-auto px-4 py-8">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -417,9 +417,8 @@ export default function AdminPage() {
                   <div className="flex items-center gap-3">
                     <Button
                       size="sm"
-                      variant="outline"
+                      className="button-epic"
                       onClick={fetchSubmissions}
-                      className="border-white/20 text-white hover:bg-white/10"
                     >
                       <RefreshCw className="h-4 w-4 mr-1" />
                       Refresh
@@ -524,7 +523,7 @@ export default function AdminPage() {
       {activeTab === "approved" && (
         <section className="relative z-10">
           <div className="container mx-auto px-4 py-8">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -536,9 +535,8 @@ export default function AdminPage() {
                   <div className="flex items-center gap-3">
                     <Button
                       size="sm"
-                      variant="outline"
+                      className="button-epic"
                       onClick={fetchApprovedArticles}
-                      className="border-white/20 text-white hover:bg-white/10"
                     >
                       <RefreshCw className="h-4 w-4 mr-1" />
                       Refresh
@@ -763,7 +761,7 @@ export default function AdminPage() {
       {activeTab === "users" && (
         <section className="relative z-10">
           <div className="container mx-auto px-4 py-8">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-white">User Management</CardTitle>
                 <CardDescription className="text-white/80">
@@ -828,7 +826,7 @@ export default function AdminPage() {
       {activeTab === "settings" && (
         <section className="relative z-10">
           <div className="container mx-auto px-4 py-8">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-white">Platform Settings</CardTitle>
                 <CardDescription className="text-white/80">
@@ -844,14 +842,14 @@ export default function AdminPage() {
                         <label className="text-white/80 text-sm mb-2 block">Platform Name</label>
                         <Input 
                           defaultValue="Developers Club" 
-                          className="bg-white/10 border-white/20 text-white"
+                          className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                         />
                       </div>
                       <div>
                         <label className="text-white/80 text-sm mb-2 block">Contact Email</label>
                         <Input 
                           defaultValue="devclub@iiitdm.ac.in" 
-                          className="bg-white/10 border-white/20 text-white"
+                          className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                         />
                       </div>
                     </div>
@@ -865,13 +863,13 @@ export default function AdminPage() {
                         <Input 
                           type="number" 
                           defaultValue="5" 
-                          className="bg-white/10 border-white/20 text-white"
+                          className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                         />
                       </div>
                       <div>
                         <label className="text-white/80 text-sm mb-2 block">Auto-approve Articles</label>
                         <Select defaultValue="false">
-                          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                          <SelectTrigger className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>

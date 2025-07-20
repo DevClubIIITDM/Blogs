@@ -126,7 +126,7 @@ export default function ContactPage() {
                         placeholder="Your name"
                         value={formData.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
-                        className="glass-morphism text-white"
+                        className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                         required
                       />
                     </div>
@@ -138,7 +138,7 @@ export default function ContactPage() {
                         placeholder="Your email"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="glass-morphism text-white"
+                        className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                         required
                       />
                     </div>
@@ -151,7 +151,7 @@ export default function ContactPage() {
                       placeholder="Message subject"
                       value={formData.subject}
                       onChange={(e) => handleInputChange("subject", e.target.value)}
-                      className="glass-morphism text-white"
+                      className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                       required
                     />
                   </div>
@@ -162,7 +162,7 @@ export default function ContactPage() {
                       value={formData.category}
                       onValueChange={(value) => handleInputChange("category", value)}
                     >
-                      <SelectTrigger className="glass-morphism text-white">
+                      <SelectTrigger className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40">
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -181,7 +181,7 @@ export default function ContactPage() {
                       placeholder="Your message"
                       value={formData.message}
                       onChange={(e) => handleInputChange("message", e.target.value)}
-                      className="min-h-[150px] glass-morphism text-white"
+                      className="min-h-[150px] bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                       required
                     />
                   </div>

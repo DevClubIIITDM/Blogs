@@ -151,7 +151,7 @@ export default function WriteForUsPage() {
       <BackgroundWrapper>
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardContent className="pt-6">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
                 <p className="text-white/80">Verifying your access...</p>
@@ -169,7 +169,7 @@ export default function WriteForUsPage() {
       <BackgroundWrapper>
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-white mb-4">
                   Access Restricted
@@ -197,7 +197,7 @@ export default function WriteForUsPage() {
       <BackgroundWrapper>
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-white mb-4">
                   Sign In to Contribute
@@ -230,7 +230,7 @@ export default function WriteForUsPage() {
       <BackgroundWrapper>
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-center mb-4">
                   <CheckCircle className="h-12 w-12 text-green-400" />
@@ -303,7 +303,7 @@ export default function WriteForUsPage() {
       <section className="relative z-10">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-white">Submit Your Article</CardTitle>
                 <CardDescription className="text-white/80">
@@ -328,8 +328,7 @@ export default function WriteForUsPage() {
                           <p className="text-white/60 text-sm mb-4">Maximum file size: 5MB</p>
                           <Button
                             type="button"
-                            variant="outline"
-                            className="border-white/20 text-white hover:bg-white/10"
+                            className="button-epic"
                             onClick={() => document.getElementById('file-upload')?.click()}
                           >
                             <File className="h-4 w-4 mr-2" />
@@ -403,7 +402,7 @@ export default function WriteForUsPage() {
                       placeholder="Enter your article title"
                       value={formData.title}
                       onChange={(e) => handleInputChange('title', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                      className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                       required
                     />
                   </div>
@@ -415,7 +414,7 @@ export default function WriteForUsPage() {
                       placeholder="Brief description of your article (will be auto-filled from markdown content)"
                       value={formData.excerpt}
                       onChange={(e) => handleInputChange('excerpt', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40 min-h-[80px]"
+                      className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40 min-h-[80px]"
                       required
                     />
                   </div>
@@ -424,7 +423,7 @@ export default function WriteForUsPage() {
                   <div className="space-y-2">
                     <label className="text-white font-medium">Category *</label>
                     <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                      <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectTrigger className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40">
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -445,7 +444,7 @@ export default function WriteForUsPage() {
                       placeholder="Enter tags separated by commas (e.g., React, JavaScript, Web Development)"
                       value={formData.tags}
                       onChange={(e) => handleInputChange('tags', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                      className="bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                     />
                   </div>
 
@@ -469,8 +468,7 @@ export default function WriteForUsPage() {
                   <div className="flex items-center justify-end gap-4 pt-6 border-t border-white/10">
                     <Button
                       type="button"
-                      variant="outline"
-                      className="border-white/20 text-white hover:bg-white/10"
+                      className="button-epic"
                       onClick={() => {
                         setFormData({ title: "", excerpt: "", category: "", tags: "" })
                         removeFile()
@@ -498,7 +496,7 @@ export default function WriteForUsPage() {
       <section className="relative z-10">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <Card className="glass-morphism border-white/20">
+            <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-white">Submission Guidelines</CardTitle>
                 <CardDescription className="text-white/80">
