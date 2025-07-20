@@ -59,11 +59,11 @@ export function BlogFilters({ categories, allPosts }: BlogFiltersProps) {
                   placeholder="Search articles..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 glass-morphism text-white"
+                  className="pl-10 bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
                 />
               </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full sm:w-48 glass-morphism text-white">
+                <SelectTrigger className="w-full sm:w-48 bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
@@ -77,7 +77,7 @@ export function BlogFilters({ categories, allPosts }: BlogFiltersProps) {
               </Select>
             </div>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full sm:w-48 glass-morphism text-white">
+              <SelectTrigger className="w-full sm:w-48 bg-[#191d2e] border-white/20 text-white placeholder:text-white/60 focus:border-white/40">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>

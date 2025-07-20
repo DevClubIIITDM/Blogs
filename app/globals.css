@@ -47,6 +47,17 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Custom color variables from blogg style */
+    --primary-color: #5c42ff;
+    --bg-color: #181726;
+    --card-bg: #211f33;
+    --sidebar-bg: #26203e;
+    --accent-color: #12d8fa;
+    --text-main: #f1f5fa;
+    --text-secondary: #a2b1cb;
+    --border-radius: 16px;
+    --shadow: 0 4px 24px 0 #1710263d;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -89,7 +100,16 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    min-height: 100vh;
+    background: linear-gradient(115deg, #2b2369 0%, #161823 45%, #201050 100%);
+    color: #f1f5fa;
+    font-family: 'Fira Mono', 'Menlo', 'Monaco', monospace;
+  }
+  
+  html {
+    background: linear-gradient(135deg, #23233b 10%, #3e2987 100%);
+    scroll-behavior: smooth;
   }
 }
 

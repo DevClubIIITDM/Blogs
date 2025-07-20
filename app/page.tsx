@@ -68,70 +68,7 @@ const stats = [
   { icon: Zap, label: "Tech Events", value: "25+" },
 ]
 
-// Client-side only component for animated background elements
-function AnimatedBackground() {
-  const [isMounted, setIsMounted] = useState(false)
 
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  if (!isMounted) {
-  return (
-      <>
-        <div className="nebula"></div>
-        <div className="star-field"></div>
-        <div className="cosmic-dust"></div>
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-      </>
-    )
-  }
-
-  return (
-    <>
-        <div className="nebula"></div>
-        <div className="star-field">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="star"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 4}s`
-              }}
-            />
-          ))}
-        </div>
-        <div className="cosmic-dust"></div>
-
-        {/* Light beams */}
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-        <div className="light-beam"></div>
-
-        {/* Animated particles */}
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className="particle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${6 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 4}s`
-            }}
-          />
-        ))}
-    </>
-  )
-}
 
 export default function HomePage() {
   const { isSignedIn } = useUser()
@@ -139,8 +76,6 @@ export default function HomePage() {
   return (
     <ScrollReveal>
       <div className="min-h-screen hero-background relative">
-        {/* Background layers */}
-        <AnimatedBackground />
 
         {/* Hero Section */}
         <section className="relative py-20 lg:py-32 z-10">
@@ -166,7 +101,7 @@ export default function HomePage() {
                     </Link>
                   </Button>
                   {isSignedIn && (
-                    <Button asChild size="lg" variant="outline" className="text-lg px-8 border-white/20 text-white hover:bg-white/10">
+                    <Button asChild size="lg" className="text-lg px-8 button-epic">
                       <Link href="/write-for-us">
                         Write for Us
                       </Link>
@@ -208,8 +143,8 @@ export default function HomePage() {
         {/* About the Club Section */}
         <section className="py-16 relative z-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8 glow-card animated-border hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">About the Club</h2>
+            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white">About the Club</h2>
               <p className="text-xl text-white/80">
                 The Developers Club is a vibrant community of students and professionals passionate about technology, coding, and innovation. We organize workshops, hackathons, and collaborative projects to foster learning and growth. Whether you are a beginner or an expert, you will find a welcoming space to connect, share, and create together.
               </p>
@@ -220,8 +155,8 @@ export default function HomePage() {
         {/* About the Website Section */}
         <section className="py-20 relative z-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 glow-card animated-border hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] text-center">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">About the Website</h2>
+            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 text-center">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white">About the Website</h2>
               <p className="text-xl text-white/80">
                 This website is the digital home of the Developers Club. Here, you can explore insightful blog posts, stay updated on upcoming events, and connect with fellow tech enthusiasts. Built with Next.js and modern web technologies, our platform is designed to be fast, accessible, and community-driven.
               </p>
@@ -258,14 +193,14 @@ export default function HomePage() {
         {/* CTA Section (final) */}
         <section className="py-20 relative z-10">
           <div className="container mx-auto px-4 text-center">
-            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 glow-card animated-border">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">Ready to Share Your Tech Journey?</h2>
+            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white">Ready to Share Your Tech Journey?</h2>
               <p className="text-xl text-white/80">
                 Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
                 beginner or expert, your voice matters.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className="text-lg px-8 button-epic pulse-glow">
+                <Button asChild size="lg" className="text-lg px-8 button-epic">
                   <Link href="/write-for-us">Submit Your Article</Link>
                 </Button>
                 <Button
@@ -286,7 +221,7 @@ export default function HomePage() {
         {!isSignedIn && (
           <section className="py-20 relative z-10">
             <div className="container mx-auto px-4 text-center">
-              <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 glow-card animated-border hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+              <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8">
                 <div className="flex justify-center mb-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                     <svg 
@@ -304,17 +239,17 @@ export default function HomePage() {
                     </svg>
                   </div>
                 </div>
-                <h2 className="text-3xl lg:text-4xl font-bold text-white text-shimmer">Got Amazing Tech Insights to Share?</h2>
+                <h2 className="text-3xl lg:text-4xl font-bold text-white">Got Amazing Tech Insights to Share?</h2>
                 <p className="text-xl text-white/80">
                   Your knowledge could inspire countless developers! Share your experiences, tutorials, and tech discoveries. 
                   Sign in now to become a valued contributor to our growing tech community.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button asChild size="lg" className="text-lg px-8 button-epic pulse-glow group">
+                  <Button asChild size="lg" className="text-lg px-8 button-epic">
                     <Link href="/api/auth/signin" className="flex items-center gap-2">
                       Sign In to Contribute
                       <svg 
-                        className="w-5 h-5 transform transition-transform group-hover:translate-x-1" 
+                        className="w-5 h-5" 
                         xmlns="http://www.w3.org/2000/svg" 
                         viewBox="0 0 24 24" 
                         fill="none" 
