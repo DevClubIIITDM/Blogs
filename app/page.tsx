@@ -84,7 +84,7 @@ export default function HomePage() {
               <div className="space-y-8 section-animate">
                 <div className="space-y-4">
                   <Badge variant="secondary" className="w-fit glass-morphism text-white">
-                    Developers Club
+                    Developers Blog
                   </Badge>
                   <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-white">
                     Innovate. Learn. <span className="text-shimmer">Create.</span>

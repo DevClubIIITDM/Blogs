@@ -21,10 +21,6 @@ const navigation = [
     href: "/blog",
   },
   {
-    name: "Projects",
-    href: "/projects",
-  },
-  {
     name: "Contact",
     href: "/contact",
   },
@@ -418,7 +414,7 @@ export function Navbar() {
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-lg transform scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
             <span className="text-xl font-bold text-shimmer-hover">
-              Developers Club
+              Developers Blog
             </span>
           </Link>
 

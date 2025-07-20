@@ -212,7 +212,7 @@ export default function WriteForUsPage() {
                     Sign In to Continue
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+                <Button asChild className="w-full button-epic">
                   <Link href="/">
                     Return to Home
                   </Link>
@@ -246,7 +246,7 @@ export default function WriteForUsPage() {
                       Submit Another Article
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+                  <Button asChild className="w-full button-epic">
                     <Link href="/">
                       Return to Home
                     </Link>
@@ -280,7 +280,7 @@ export default function WriteForUsPage() {
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-3 mb-4">
               <FileText className="h-8 w-8 text-blue-400" />
-              <h1 className="text-4xl lg:text-5xl font-bold text-white">Write for Us</h1>
+              <h1 className="text-4xl lg:text-5xl font-bold text-white">Write for Developers Blog</h1>
             </div>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
               Share your knowledge and contribute to our community blog. Upload your markdown file and let's publish your insights!
@@ -357,9 +357,8 @@ export default function WriteForUsPage() {
                           <div className="flex items-center justify-center gap-2">
                             <Button
                               type="button"
-                              variant="outline"
                               size="sm"
-                              className="border-green-400/30 text-green-300 hover:bg-green-500/20"
+                              className="button-epic"
                               onClick={() => document.getElementById('file-upload')?.click()}
                             >
                               <File className="h-4 w-4 mr-1" />
@@ -367,9 +366,8 @@ export default function WriteForUsPage() {
                             </Button>
                             <Button
                               type="button"
-                              variant="outline"
                               size="sm"
-                              className="border-red-400/30 text-red-300 hover:bg-red-500/20"
+                              className="button-epic"
                               onClick={removeFile}
                             >
                               <X className="h-4 w-4 mr-1" />
