@@ -17,21 +17,22 @@ export function MarkdownRenderer({ content, className = "" }: MarkdownRendererPr
       try {
         // Basic markdown to HTML conversion
         let html = content
-          // Headers
-          .replace(/^### (.*$)/gim, '<h3 class="text-2xl font-bold text-white mb-4 mt-6">$1</h3>')
-          .replace(/^## (.*$)/gim, '<h2 class="text-3xl font-bold text-white mb-4 mt-8">$1</h2>')
-          .replace(/^# (.*$)/gim, '<h1 class="text-4xl font-bold text-white mb-6 mt-8">$1</h1>')
+          // Bold and italic (process first to handle them in headers)
+          .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-100">$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em class="italic text-gray-100/90">$1</em>')
           
-          // Bold and italic
-          .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>')
-          .replace(/\*(.*?)\*/g, '<em class="italic text-white/90">$1</em>')
+          // Headers (process after bold/italic to handle them within headers)
+          .replace(/^### (.*$)/gim, '<h3 class="text-2xl font-bold text-gray-100 mb-4 mt-6">$1</h3>')
+          .replace(/^## (.*$)/gim, '<h2 class="text-3xl font-bold text-gray-100 mb-4 mt-8">$1</h2>')
+          .replace(/^# (.*$)/gim, '<h1 class="text-4xl font-bold text-gray-100 mb-6 mt-8">$1</h1>')
           
           // Links
           .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-400 hover:text-blue-300 underline" target="_blank" rel="noopener noreferrer">$1</a>')
           
-          // Lists
-          .replace(/^\* (.*$)/gim, '<li class="text-white/90 mb-1">$1</li>')
-          .replace(/^\d+\. (.*$)/gim, '<li class="text-white/90 mb-1">$1</li>')
+                     // Lists
+           .replace(/^\* (.*$)/gim, '<li class="text-gray-100/90 mb-1">$1</li>')
+           .replace(/^- (.*$)/gim, '<li class="text-gray-100/90 mb-1">$1</li>')
+           .replace(/^\d+\. (.*$)/gim, '<li class="text-gray-100/90 mb-1">$1</li>')
           
           // Code blocks with language detection
           .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
@@ -40,24 +41,24 @@ export function MarkdownRenderer({ content, className = "" }: MarkdownRendererPr
           })
           
           // Inline code
-          .replace(/`([^`]+)`/g, '<code class="bg-white/10 text-white px-2 py-1 rounded text-sm font-mono">$1</code>')
+          .replace(/`([^`]+)`/g, '<code class="bg-gray-700 text-gray-100 px-2 py-1 rounded text-sm font-mono">$1</code>')
           
           // Paragraphs
-          .replace(/\n\n/g, '</p><p class="text-white/90 leading-relaxed mb-4">')
+          .replace(/\n\n/g, '</p><p class="text-gray-100/90 leading-relaxed mb-4">')
           
           // Line breaks
           .replace(/\n/g, '<br>')
 
         // Wrap in paragraph tags
-        html = `<p class="text-white/90 leading-relaxed mb-4">${html}</p>`
+        html = `<p class="text-gray-100/90 leading-relaxed mb-4">${html}</p>`
         
         // Clean up empty paragraphs
-        html = html.replace(/<p class="text-white\/90 leading-relaxed mb-4"><\/p>/g, '')
+        html = html.replace(/<p class="text-gray-100\/90 leading-relaxed mb-4"><\/p>/g, '')
         
         setRenderedContent(html)
       } catch (error) {
         console.error('Error rendering markdown:', error)
-        setRenderedContent(`<p class="text-white/90">${content}</p>`)
+        setRenderedContent(`<p class="text-gray-100/90">${content}</p>`)
       }
     }
 
@@ -88,9 +89,9 @@ export function EnhancedMarkdownRenderer({ content, className = "" }: MarkdownRe
       const flushList = () => {
         if (currentList.length > 0) {
           elements.push(
-            <ul key={`list-${elements.length}`} className="list-disc list-inside text-white/90 mb-4 space-y-1">
+            <ul key={`list-${elements.length}`} className="list-disc list-inside text-gray-100/90 mb-4 space-y-1">
               {currentList.map((item, index) => (
-                <li key={index} className="text-white/90">{item}</li>
+                <li key={index} className="text-gray-100/90" dangerouslySetInnerHTML={{ __html: item }} />
               ))}
             </ul>
           )
@@ -143,42 +144,54 @@ export function EnhancedMarkdownRenderer({ content, className = "" }: MarkdownRe
         // Handle headers
         if (line.startsWith('# ')) {
           flushList()
+          let headerText = line.slice(2)
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-100">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic text-gray-100/90">$1</em>')
           elements.push(
-            <h1 key={`h1-${index}`} className="text-4xl font-bold text-white mb-6 mt-8">
-              {line.slice(2)}
-            </h1>
+            <h1 key={`h1-${index}`} className="text-4xl font-bold text-gray-100 mb-6 mt-8"
+                dangerouslySetInnerHTML={{ __html: headerText }} />
           )
           return
         }
 
         if (line.startsWith('## ')) {
           flushList()
+          let headerText = line.slice(3)
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-100">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic text-gray-100/90">$1</em>')
           elements.push(
-            <h2 key={`h2-${index}`} className="text-3xl font-bold text-white mb-4 mt-8">
-              {line.slice(3)}
-            </h2>
+            <h2 key={`h2-${index}`} className="text-3xl font-bold text-gray-100 mb-4 mt-8"
+                dangerouslySetInnerHTML={{ __html: headerText }} />
           )
           return
         }
 
         if (line.startsWith('### ')) {
           flushList()
+          let headerText = line.slice(4)
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-100">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic text-gray-100/90">$1</em>')
           elements.push(
-            <h3 key={`h3-${index}`} className="text-2xl font-bold text-white mb-4 mt-6">
-              {line.slice(4)}
-            </h3>
+            <h3 key={`h3-${index}`} className="text-2xl font-bold text-gray-100 mb-4 mt-6"
+                dangerouslySetInnerHTML={{ __html: headerText }} />
           )
           return
         }
 
         // Handle lists
         if (line.startsWith('* ') || line.startsWith('- ')) {
-          currentList.push(line.slice(2))
+          let listItem = line.slice(2)
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-100">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic text-gray-100/90">$1</em>')
+          currentList.push(listItem)
           return
         }
 
         if (/^\d+\. /.test(line)) {
-          currentList.push(line.replace(/^\d+\. /, ''))
+          let listItem = line.replace(/^\d+\. /, '')
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-100">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic text-gray-100/90">$1</em>')
+          currentList.push(listItem)
           return
         }
 
@@ -191,13 +204,13 @@ export function EnhancedMarkdownRenderer({ content, className = "" }: MarkdownRe
         // Handle regular paragraphs
         flushList()
         let processedLine = line
-          .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>')
-          .replace(/\*(.*?)\*/g, '<em class="italic text-white/90">$1</em>')
-          .replace(/`([^`]+)`/g, '<code class="bg-white/10 text-white px-2 py-1 rounded text-sm font-mono">$1</code>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-100">$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em class="italic text-gray-100/90">$1</em>')
+          .replace(/`([^`]+)`/g, '<code class="bg-gray-700 text-gray-100 px-2 py-1 rounded text-sm font-mono">$1</code>')
           .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-400 hover:text-blue-300 underline" target="_blank" rel="noopener noreferrer">$1</a>')
 
         elements.push(
-          <p key={`p-${index}`} className="text-white/90 leading-relaxed mb-4" 
+          <p key={`p-${index}`} className="text-gray-100/90 leading-relaxed mb-4" 
              dangerouslySetInnerHTML={{ __html: processedLine }} />
         )
       })

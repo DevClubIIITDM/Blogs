@@ -8,11 +8,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, FileText, Users, Award, Send, CheckCircle, Upload, File, X, AlertCircle } from "lucide-react"
+import { ArrowLeft, FileText, Users, Award, Send, CheckCircle, Upload, File, X, AlertCircle, Edit } from "lucide-react"
 import { BackgroundWrapper } from "@/components/background-wrapper"
 import { useUser } from "@clerk/nextjs"
 import { useIIITDMValidation } from "@/hooks/use-iiitdm-validation"
 import { MarkdownRenderer } from "@/components/markdown-renderer"
+import { TipTapEditor } from "@/components/tiptap-editor"
 
 const categories = [
   "Frontend Development",
@@ -35,6 +36,12 @@ export default function WriteForUsPage() {
   const [fileName, setFileName] = useState("")
   const [fileContent, setFileContent] = useState("")
   const [fileError, setFileError] = useState("")
+  const [useEditor, setUseEditor] = useState(false)
+  const [editorContent, setEditorContent] = useState("")
+  const [showPreview, setShowPreview] = useState(false)
+  const [showFullScreenEditor, setShowFullScreenEditor] = useState(false)
+  const [showOnlyEditor, setShowOnlyEditor] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -45,19 +52,26 @@ export default function WriteForUsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Validate that a markdown file is uploaded
-    if (!uploadedFile || !fileContent) {
-      setFileError("Please upload a markdown (.md) file")
+    // Validate that content is provided (either from file or editor)
+    if (!useEditor && (!uploadedFile || !fileContent.trim())) {
+      setFileError("Please upload a markdown (.md) file with content")
       return
     }
     
+    if (useEditor && !editorContent.trim()) {
+      alert("Please write some content in the editor")
+      return
+    }
+    
+    const finalContent = useEditor ? editorContent : fileContent
+    
     const submissionData = {
       ...formData,
-      content: fileContent, // Content extracted from markdown file
+      content: finalContent, // Content from editor or markdown file
       fileUpload: {
-        name: fileName,
-        content: fileContent,
-        size: uploadedFile.size
+        name: useEditor ? `${fileName || 'article'}.md` : fileName,
+        content: finalContent,
+        size: useEditor ? new Blob([finalContent]).size : (uploadedFile?.size || 0)
       },
       submittedBy: isSignedIn ? user?.emailAddresses?.[0]?.emailAddress : "Anonymous",
       submittedAt: new Date().toISOString()
@@ -134,6 +148,12 @@ export default function WriteForUsPage() {
           setFormData(prev => ({ ...prev, excerpt }))
         }
       }
+
+      // Automatically open the full-screen rich editor with the uploaded content
+      setUseEditor(true)
+      setEditorContent(content)
+      setShowFullScreenEditor(true)
+      setShowOnlyEditor(true)
     }
     reader.readAsText(file)
   }
@@ -143,6 +163,100 @@ export default function WriteForUsPage() {
     setFileName("")
     setFileContent("")
     setFileError("")
+    setShowPreview(false)
+  }
+
+  const handleEditFile = () => {
+    setShowPreview(true)
+  }
+
+  const handleFileContentChange = (newContent: string) => {
+    setFileContent(newContent)
+  }
+
+  const handleEditorContentChange = (newContent: string) => {
+    setEditorContent(newContent)
+    
+    // Auto-fill title and excerpt from editor content
+    if (!formData.title) {
+      const lines = newContent.split('\n')
+      const firstHeading = lines.find(line => line.startsWith('# '))
+      if (firstHeading) {
+        const title = firstHeading.replace('# ', '').trim()
+        setFormData(prev => ({ ...prev, title }))
+      }
+    }
+    
+    if (!formData.excerpt) {
+      const lines = newContent.split('\n')
+      const firstParagraph = lines.find(line => line.trim() && !line.startsWith('#'))
+      if (firstParagraph) {
+        const excerpt = firstParagraph.trim().substring(0, 150) + (firstParagraph.length > 150 ? '...' : '')
+        setFormData(prev => ({ ...prev, excerpt }))
+      }
+    }
+  }
+
+  const handleSubmitFromEditor = async (content: string) => {
+    setIsSubmitting(true)
+    
+    try {
+      // Validate required fields
+      if (!formData.title.trim()) {
+        alert('Please provide an article title')
+        return
+      }
+      
+      if (!formData.excerpt.trim()) {
+        alert('Please provide an article excerpt')
+        return
+      }
+      
+      if (!formData.category.trim()) {
+        alert('Please select a category')
+        return
+      }
+      
+      if (!content.trim()) {
+        alert('Please write some content')
+        return
+      }
+      
+      const submissionData = {
+        ...formData,
+        content: content,
+        fileUpload: {
+          name: `${fileName || 'article'}.md`,
+          content: content,
+          size: new Blob([content]).size
+        },
+        submittedBy: isSignedIn ? user?.emailAddresses?.[0]?.emailAddress : "Anonymous",
+        submittedAt: new Date().toISOString()
+      }
+      
+      const response = await fetch('/api/submit-article/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      })
+      
+      const result = await response.json()
+      
+      if (result.success) {
+        console.log("Article submitted successfully:", result)
+        // Redirect to home page
+        window.location.href = '/'
+      } else {
+        alert('Failed to submit article. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error submitting article:', error)
+      alert('Failed to submit article. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // Show loading while checking validation
@@ -222,6 +336,32 @@ export default function WriteForUsPage() {
           </div>
         </div>
       </BackgroundWrapper>
+    )
+  }
+
+  // Show only the editor if a file has been uploaded
+  if (showOnlyEditor && showFullScreenEditor) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <TipTapEditor
+          content={editorContent}
+          onContentChange={handleEditorContentChange}
+          placeholder="Write your article content here..."
+          fullScreen={true}
+          formData={formData}
+          onSubmitArticle={handleSubmitFromEditor}
+          isSubmitting={isSubmitting}
+          onClose={() => {
+            setShowOnlyEditor(false)
+            setShowFullScreenEditor(false)
+            setUseEditor(false)
+            setEditorContent("")
+            setFileContent("")
+            setUploadedFile(null)
+            setFileName("")
+          }}
+        />
+      </div>
     )
   }
 
@@ -307,91 +447,11 @@ export default function WriteForUsPage() {
               <CardHeader>
                 <CardTitle className="text-white">Submit Your Article</CardTitle>
                 <CardDescription className="text-white/80">
-                  Upload your markdown file and provide article details. The content will be automatically extracted from your .md file.
+                  Fill in article details first, then upload your markdown file or use the rich editor. The content will be automatically extracted and you can submit directly from the editor.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Markdown File Upload - Required */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <label className="text-white font-medium">Markdown File *</label>
-                      <Badge variant="secondary" className="bg-red-500/20 text-red-300 text-xs">
-                        Required
-                      </Badge>
-                    </div>
-                    <div className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-white/40 transition-colors">
-                      {!uploadedFile ? (
-                        <div>
-                          <Upload className="h-12 w-12 text-white/40 mx-auto mb-4" />
-                          <p className="text-white/80 mb-2">Upload your markdown (.md) file</p>
-                          <p className="text-white/60 text-sm mb-4">Maximum file size: 5MB</p>
-                          <Button
-                            type="button"
-                            className="button-epic"
-                            onClick={() => document.getElementById('file-upload')?.click()}
-                          >
-                            <File className="h-4 w-4 mr-2" />
-                            Choose File
-                          </Button>
-                          <input
-                            id="file-upload"
-                            type="file"
-                            accept=".md"
-                            onChange={handleFileUpload}
-                            className="hidden"
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <div className="flex items-center justify-center gap-3 mb-4">
-                            <File className="h-8 w-8 text-green-400" />
-                            <div className="text-left">
-                              <p className="text-white font-medium">{fileName}</p>
-                              <p className="text-white/60 text-sm">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
-                              <p className="text-blue-300 text-xs">
-                                File ID: {fileName.replace('.md', '')}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-center gap-2">
-                            <Button
-                              type="button"
-                              size="sm"
-                              className="button-epic"
-                              onClick={() => document.getElementById('file-upload')?.click()}
-                            >
-                              <File className="h-4 w-4 mr-1" />
-                              Change File
-                            </Button>
-                            <Button
-                              type="button"
-                              size="sm"
-                              className="button-epic"
-                              onClick={removeFile}
-                            >
-                              <X className="h-4 w-4 mr-1" />
-                              Remove
-                            </Button>
-                          </div>
-                          <input
-                            id="file-upload"
-                            type="file"
-                            accept=".md"
-                            onChange={handleFileUpload}
-                            className="hidden"
-                          />
-                        </div>
-                      )}
-                    </div>
-                    {fileError && (
-                      <div className="flex items-center gap-2 text-red-400 text-sm">
-                        <AlertCircle className="h-4 w-4" />
-                        {fileError}
-                      </div>
-                    )}
-                  </div>
-
                   {/* Article Title */}
                   <div className="space-y-2">
                     <label className="text-white font-medium">Article Title *</label>
@@ -446,18 +506,159 @@ export default function WriteForUsPage() {
                     />
                   </div>
 
+                  {/* Editor Option */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-white font-medium">Content Creation</label>
+                      <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 text-xs">
+                        Optional
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Button
+                        type="button"
+                        variant={!useEditor ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setUseEditor(false)}
+                        className={!useEditor ? "bg-green-600 hover:bg-green-700" : "border-white/20 text-white hover:bg-white/10"}
+                      >
+                        <File className="h-4 w-4 mr-1" />
+                        Upload .md File
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={useEditor ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setUseEditor(true)}
+                        className={useEditor ? "bg-blue-600 hover:bg-blue-700" : "border-white/20 text-white hover:bg-white/10"}
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Use Rich Editor
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Markdown File Upload - Required when not using editor */}
+                  {!useEditor && (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <label className="text-white font-medium">Markdown File *</label>
+                      <Badge variant="secondary" className="bg-red-500/20 text-red-300 text-xs">
+                        Required
+                      </Badge>
+                    </div>
+                    <div className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-white/40 transition-colors">
+                      {!uploadedFile ? (
+                        <div>
+                          <Upload className="h-12 w-12 text-white/40 mx-auto mb-4" />
+                          <p className="text-white/80 mb-2">Upload your markdown (.md) file</p>
+                          <p className="text-white/60 text-sm mb-4">Maximum file size: 5MB</p>
+                          <Button
+                            type="button"
+                            className="button-epic"
+                            onClick={() => document.getElementById('file-upload')?.click()}
+                          >
+                            <File className="h-4 w-4 mr-2" />
+                            Choose File
+                          </Button>
+                          <input
+                            id="file-upload"
+                            type="file"
+                            accept=".md"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="flex items-center justify-center gap-3 mb-4">
+                            <File className="h-8 w-8 text-green-400" />
+                            <div className="text-left">
+                              <p className="text-white font-medium">{fileName}</p>
+                              <p className="text-white/60 text-sm">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
+                              <p className="text-blue-300 text-xs">
+                                File ID: {fileName.replace('.md', '')}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="button-epic"
+                              onClick={() => document.getElementById('file-upload')?.click()}
+                            >
+                              <File className="h-4 w-4 mr-1" />
+                              Change File
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="button-epic"
+                              onClick={handleEditFile}
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              Edit Content
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="button-epic"
+                              onClick={removeFile}
+                            >
+                              <X className="h-4 w-4 mr-1" />
+                              Remove
+                            </Button>
+                          </div>
+                          
+                          {/* File Content Preview */}
+                          {!showPreview && fileContent && (
+                            <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/10">
+                              <h5 className="text-white font-medium mb-2">File Content Preview:</h5>
+                              <div className="max-h-32 overflow-y-auto">
+                                <pre className="text-white/70 text-xs whitespace-pre-wrap">
+                                  {fileContent.length > 500 
+                                    ? fileContent.substring(0, 500) + '...' 
+                                    : fileContent
+                                  }
+                                </pre>
+                              </div>
+                            </div>
+                          )}
+                          
+                          <input
+                            id="file-upload"
+                            type="file"
+                            accept=".md"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                          />
+                        </div>
+                      )}
+                    </div>
+                    {fileError && (
+                      <div className="flex items-center gap-2 text-red-400 text-sm">
+                        <AlertCircle className="h-4 w-4" />
+                        {fileError}
+                      </div>
+                    )}
+                  </div>
+
+                  )}
+
                   {/* Content Preview */}
-                  {fileContent && (
+                  {(fileContent || editorContent) && (
                     <div className="space-y-2">
-                      <label className="text-white font-medium">Content Preview</label>
+                      <label className="text-white font-medium">Final Content Preview</label>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-4 max-h-48 overflow-y-auto">
                         <MarkdownRenderer 
-                          content={fileContent.substring(0, 1000) + (fileContent.length > 1000 ? '...' : '')}
+                          content={(useEditor ? editorContent : fileContent).substring(0, 1000) + 
+                            ((useEditor ? editorContent : fileContent).length > 1000 ? '...' : '')}
                           className="text-white/80 text-sm"
                         />
                       </div>
                       <p className="text-white/60 text-xs">
-                        Content extracted from your markdown file. Full content will be available after approval.
+                        Preview of your article content. Full content will be available after approval.
                       </p>
                     </div>
                   )}
@@ -470,6 +671,9 @@ export default function WriteForUsPage() {
                       onClick={() => {
                         setFormData({ title: "", excerpt: "", category: "", tags: "" })
                         removeFile()
+                        setUseEditor(false)
+                        setEditorContent("")
+                        setShowPreview(false)
                       }}
                     >
                       Clear Form
@@ -477,7 +681,7 @@ export default function WriteForUsPage() {
                     <Button
                       type="submit"
                       className="button-epic"
-                      disabled={!uploadedFile || !fileContent}
+                      disabled={(!useEditor && (!uploadedFile || !fileContent.trim())) || (useEditor && !editorContent.trim())}
                     >
                       <Send className="h-4 w-4 mr-2" />
                       Submit Article

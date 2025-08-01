@@ -31,6 +31,7 @@ import { BackgroundWrapper } from "@/components/background-wrapper"
 import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { EnhancedMarkdownRenderer } from "@/components/markdown-renderer"
+import { TipTapEditor } from "@/components/tiptap-editor"
 
 // Mock data for admin dashboard
 const mockStats = [
@@ -93,12 +94,14 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
   const [activeTab, setActiveTab] = useState("dashboard")
-  const [pendingArticles, setPendingArticles] = useState(mockPendingArticles)
-  const [approvedArticles, setApprovedArticles] = useState([])
+  const [pendingArticles, setPendingArticles] = useState<any[]>(mockPendingArticles)
+  const [approvedArticles, setApprovedArticles] = useState<any[]>([])
   const [selectedArticle, setSelectedArticle] = useState<any>(null)
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [articleToDelete, setArticleToDelete] = useState<any>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedContent, setEditedContent] = useState("")
 
   useEffect(() => {
     if (!isLoaded) return
@@ -217,7 +220,46 @@ export default function AdminPage() {
 
   const openReviewModal = (article: any) => {
     setSelectedArticle(article)
+    setEditedContent(article.content || "")
+    setIsEditing(false)
     setShowReviewModal(true)
+  }
+
+  const handleContentUpdate = (newContent: string) => {
+    setEditedContent(newContent)
+  }
+
+  const handleSaveChanges = async () => {
+    if (!selectedArticle) return
+
+    try {
+      // Update the article content
+      const updatedArticle = {
+        ...selectedArticle,
+        content: editedContent
+      }
+
+      // Here you would typically save to your API
+      // For now, we'll just update the local state
+      if (selectedArticle.status === 'approved') {
+        const updatedApprovedArticles = approvedArticles.map((article: any) => 
+          article.id === selectedArticle.id ? updatedArticle : article
+        )
+        setApprovedArticles(updatedApprovedArticles)
+      } else {
+        const updatedPendingArticles = pendingArticles.map((article: any) => 
+          article.id === selectedArticle.id ? updatedArticle : article
+        )
+        setPendingArticles(updatedPendingArticles)
+      }
+
+      setSelectedArticle(updatedArticle)
+      setIsEditing(false)
+      alert('Content updated successfully!')
+    } catch (error) {
+      console.error('Error updating content:', error)
+      alert('Failed to update content. Please try again.')
+    }
   }
 
   const downloadMarkdownFile = (article: any) => {
@@ -680,13 +722,46 @@ export default function AdminPage() {
 
                 {/* Article Content */}
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Article Content</h4>
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
-                    <EnhancedMarkdownRenderer 
-                      content={selectedArticle.content}
-                      className="text-gray-800"
-                    />
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-gray-900">Article Content</h4>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsEditing(!isEditing)}
+                        className="border-blue-400 text-blue-600 hover:bg-blue-50"
+                      >
+                        {isEditing ? 'View' : 'Edit'}
+                      </Button>
+                      {isEditing && (
+                        <Button
+                          size="sm"
+                          onClick={handleSaveChanges}
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          Save Changes
+                        </Button>
+                      )}
+                    </div>
                   </div>
+                  
+                  {isEditing ? (
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                      <TipTapEditor
+                        content={editedContent}
+                        onContentChange={handleContentUpdate}
+                        placeholder="Edit article content..."
+                        className="bg-white"
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+                      <EnhancedMarkdownRenderer 
+                        content={selectedArticle.content}
+                        className="text-gray-800"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Action Buttons */}

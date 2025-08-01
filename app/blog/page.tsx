@@ -1,9 +1,5 @@
 import { BackgroundWrapper } from "@/components/background-wrapper"
-import { getSortedPostsData, type BlogPostMeta } from "@/lib/markdown"
 import { BlogClient } from "@/components/blog-client"
-
-// Get all posts data from markdown files (server-side)
-const allMarkdownPosts = getSortedPostsData()
 
 export default function BlogPage() {
   return (
@@ -21,7 +17,7 @@ export default function BlogPage() {
       </section>
 
       {/* Client component for dynamic content */}
-      <BlogClient markdownPosts={allMarkdownPosts} />
+      <BlogClient markdownPosts={[]} />
     </BackgroundWrapper>
   )
 }
