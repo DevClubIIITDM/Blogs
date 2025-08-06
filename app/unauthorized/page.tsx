@@ -1,15 +1,42 @@
 "use client"
 
-import { useUser, SignOutButton } from "@clerk/nextjs"
+import { SignOutButton } from "@clerk/nextjs"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-
-// Check if Clerk is configured
-const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+import { useState, useEffect } from "react"
 
 export default function UnauthorizedPage() {
-  // Only use Clerk hooks if Clerk is configured
-  const { user } = isClerkConfigured ? useUser() : { user: null }
+  const [isClerkConfigured, setIsClerkConfigured] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Check if Clerk is configured
+    const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    const isConfigured = Boolean(clerkKey && 
+                        clerkKey.trim() !== '' &&
+                        clerkKey !== 'your_publishable_key_here')
+    
+    setIsClerkConfigured(isConfigured)
+    
+    if (isConfigured) {
+      // Dynamically import Clerk hooks only if configured
+      import("@clerk/nextjs").then(({ useUser }) => {
+        try {
+          const { user: clerkUser } = useUser()
+          setUser(clerkUser)
+        } catch (error) {
+          console.log('Clerk not available:', error)
+        } finally {
+          setIsLoading(false)
+        }
+      }).catch(() => {
+        setIsLoading(false)
+      })
+    } else {
+      setIsLoading(false)
+    }
+  }, [])
 
   return (
     <div className="min-h-screen hero-background flex items-center justify-center p-4">
@@ -50,7 +77,7 @@ export default function UnauthorizedPage() {
           </div>
 
           <div className="space-y-3">
-            {isClerkConfigured && (
+            {isClerkConfigured && !isLoading && (
               <SignOutButton>
                 <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
                   Sign Out
