@@ -18,11 +18,21 @@ export function BlogClient({ markdownPosts }: BlogClientProps) {
 
   const fetchApprovedArticles = async () => {
     try {
+      console.log('Fetching approved articles from /api/blog-posts/')
       const response = await fetch('/api/blog-posts/')
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const data = await response.json()
+      console.log('Received data from blog-posts API:', data)
       
       if (data.success) {
+        console.log('Setting approved articles:', data.posts)
         setApprovedArticles(data.posts || [])
+      } else {
+        console.error('API returned success: false:', data.message)
       }
     } catch (error) {
       console.error('Error fetching approved articles:', error)

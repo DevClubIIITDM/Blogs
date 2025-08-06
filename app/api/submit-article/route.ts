@@ -2,34 +2,55 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
+// Force dynamic responses
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // File paths for persistent storage
 const dataDir = path.join(process.cwd(), 'data')
 const submissionsFile = path.join(dataDir, 'submissions.json')
 const approvedArticlesFile = path.join(dataDir, 'approved-articles.json')
 
 // Ensure data directory exists
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true })
+const ensureDataDir = () => {
+  try {
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true })
+      console.log('Created data directory:', dataDir)
+    }
+  } catch (error) {
+    console.error('Error creating data directory:', error)
+  }
 }
 
 // Helper functions to read/write data
 const readData = (filePath: string, defaultValue: any[] = []) => {
   try {
+    ensureDataDir()
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, 'utf8')
-      return JSON.parse(data)
+      const parsed = JSON.parse(data)
+      console.log(`Read data from ${filePath}:`, parsed.length, 'items')
+      return parsed
+    } else {
+      console.log(`File ${filePath} does not exist, creating with default value`)
+      writeData(filePath, defaultValue)
+      return defaultValue
     }
   } catch (error) {
-    console.error('Error reading data:', error)
+    console.error('Error reading data from', filePath, ':', error)
+    return defaultValue
   }
-  return defaultValue
 }
 
 const writeData = (filePath: string, data: any) => {
   try {
+    ensureDataDir()
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+    console.log(`Successfully wrote ${data.length} items to ${filePath}`)
   } catch (error) {
-    console.error('Error writing data:', error)
+    console.error('Error writing data to', filePath, ':', error)
+    throw error
   }
 }
 

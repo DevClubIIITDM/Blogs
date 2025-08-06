@@ -8,6 +8,10 @@ import { EnhancedMarkdownRenderer } from '@/components/markdown-renderer'
 import fs from 'fs'
 import path from 'path'
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // File paths for persistent storage
 const dataDir = path.join(process.cwd(), 'data')
 const approvedArticlesFile = path.join(dataDir, 'approved-articles.json')
