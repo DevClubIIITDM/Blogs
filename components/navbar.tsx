@@ -392,16 +392,23 @@ export function Navbar() {
         /* Mobile nav specific styles */
         .mobile-nav-link {
           padding: 0.75rem 1rem;
-          border-radius: 9999px;
-          color: #64748b;
+          border-radius: 8px;
+          color: #374151;
           text-decoration: none;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          margin: 2px 0;
         }
         .mobile-nav-link span {
           display: inline-block;
           transition: transform 0.3s ease, color 0.3s ease;
         }
+        .mobile-nav-link:hover {
+          background: rgba(59, 130, 246, 0.1);
+          color: #1e40af;
+        }
         .mobile-nav-link:hover span {
-          transform: scale(1.1);
+          transform: scale(1.05);
           color: #4f46e5;
         }
         .mobile-nav-link.active {
@@ -529,7 +536,7 @@ export function Navbar() {
                   size="icon"
                   className="hover:bg-blue-600/10 transition-colors duration-200"
                 >
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-6 w-6 text-black" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
@@ -554,7 +561,6 @@ export function Navbar() {
                     {isMounted && (
                       <>
                         <AuthSection />
-                        <WriteForUsMobileLink onClose={() => setIsOpen(false)} />
                         <AdminMobileLink onClose={() => setIsOpen(false)} />
                       </>
                     )}
