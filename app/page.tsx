@@ -94,22 +94,47 @@ export default function HomePage() {
                       Explore Blog Posts <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="text-lg px-8 button-epic-outline">
+                  {/* <Button asChild size="lg" variant="outline" className="text-lg px-8 button-epic-outline">
                     <Link href="/write-for-us">
                       Write for Us <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
               <div className="relative float-element">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-2xl blur-xl"></div>
-                <Image
-                  src="/placeholder.svg?height=500&width=600"
-                  alt="Tech innovation illustration"
-                  width={600}
-                  height={500}
-                  className="relative rounded-2xl shadow-2xl glass-morphism"
-                />
+                <div className="relative rounded-2xl shadow-2xl glass-morphism p-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center justify-center h-96 text-center">
+                    <div className="space-y-6">
+                      <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                        BLOG
+                      </div>
+                      <div className="text-white/80 text-lg max-w-sm">
+                        A complete guide to tech insights, tutorials, and innovations
+                      </div>
+                      <div className="flex justify-center space-x-4">
+                        <div className="w-12 h-12 rounded-lg bg-blue-500/30 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="w-12 h-12 rounded-lg bg-green-500/30 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="w-12 h-12 rounded-lg bg-purple-500/30 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-purple-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="text-sm text-white/60">
+                        Learn more →
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
