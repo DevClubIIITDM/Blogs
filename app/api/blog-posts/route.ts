@@ -70,7 +70,11 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching blog posts:', error)
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch blog posts', error: error.message },
+      { 
+        success: false, 
+        message: 'Failed to fetch blog posts', 
+        error: error instanceof Error ? error.message : String(error) 
+      },
       { status: 500 }
     )
   }
