@@ -103,15 +103,15 @@ export function TipTapEditor({
     setIsMounted(true)
   }, [])
 
-  // Debug logging for scrolling issues
+  // Update content when props change
   useEffect(() => {
-    console.log('🔍 Debug Info:')
-    console.log('Content length:', markdownContent.length)
-    console.log('Content lines:', markdownContent.split('\n').length)
-    console.log('Is mounted:', isMounted)
-    console.log('Is side by side:', isSideBySide)
-    console.log('Preview mode:', previewMode)
-  }, [markdownContent, isMounted, isSideBySide, previewMode])
+    if (content !== markdownContent) {
+      setMarkdownContent(content)
+      if (editor && content) {
+        editor.commands.setContent(content)
+      }
+    }
+  }, [content, editor, markdownContent])
 
   if (!editor || !isMounted) {
     return (
@@ -289,23 +289,93 @@ export function TipTapEditor({
           scrollbar-color: #4B5563 #1F2937;
         }
         
-        /* Ensure proper scrolling */
-        .scrollable-container {
-          height: 100% !important;
-          overflow-y: auto !important;
+        /* Responsive editor implementation */
+        .editor-container {
+          height: calc(100vh - 200px);
+          min-height: 500px;
+        }
+        
+        .scroll-textarea {
+          height: calc(100vh - 250px) !important;
+          min-height: 400px !important;
+          overflow-y: scroll !important;
+          overflow-x: hidden !important;
+          resize: none !important;
+        }
+        
+        .scroll-preview {
+          height: calc(100vh - 250px) !important;
+          min-height: 400px !important;
+          overflow-y: scroll !important;
           overflow-x: hidden !important;
         }
         
-        /* Textarea scrolling */
-        textarea.custom-scrollbar {
-          height: 100% !important;
-          min-height: 200px !important;
-          overflow-y: auto !important;
+        .stacked-textarea {
+          height: calc(45vh - 120px) !important;
+          min-height: 250px !important;
+          overflow-y: scroll !important;
+          overflow-x: hidden !important;
+          resize: none !important;
+        }
+        
+        .stacked-preview {
+          height: calc(45vh - 120px) !important;
+          min-height: 250px !important;
+          overflow-y: scroll !important;
+          overflow-x: hidden !important;
+        }
+        
+        /* Mobile-specific responsive styles */
+        @media (max-width: 768px) {
+          .editor-container {
+            height: calc(100vh - 120px);
+            min-height: 400px;
+          }
+          
+          .scroll-textarea {
+            height: calc(100vh - 180px) !important;
+            min-height: 300px !important;
+            font-size: 14px !important;
+          }
+          
+          .scroll-preview {
+            height: calc(100vh - 180px) !important;
+            min-height: 300px !important;
+          }
+          
+          .stacked-textarea {
+            height: calc(40vh - 80px) !important;
+            min-height: 200px !important;
+            font-size: 14px !important;
+          }
+          
+          .stacked-preview {
+            height: calc(40vh - 80px) !important;
+            min-height: 200px !important;
+          }
+        }
+        
+        /* Tablet responsive styles */
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .editor-container {
+            height: calc(100vh - 160px);
+            min-height: 450px;
+          }
+          
+          .scroll-textarea {
+            height: calc(100vh - 220px) !important;
+            min-height: 350px !important;
+          }
+          
+          .scroll-preview {
+            height: calc(100vh - 220px) !important;
+            min-height: 350px !important;
+          }
         }
       `}</style>
       <div className={`${className} ${fullScreen ? 'fixed inset-0 z-50' : 'w-full h-[90vh]'} bg-gray-800 border border-gray-700 rounded-lg flex flex-col`}>
-      <div className="p-6 border-b border-gray-700 flex items-center justify-between">
-        <h2 className="text-white text-xl font-semibold">Markdown Editor</h2>
+      <div className="p-3 sm:p-6 border-b border-gray-700 flex items-center justify-between">
+        <h2 className="text-white text-lg sm:text-xl font-semibold">Markdown Editor</h2>
         {onClose && (
           <Button
             size="sm"
@@ -317,141 +387,28 @@ export function TipTapEditor({
           </Button>
         )}
       </div>
-      <div className="flex-1 p-6 space-y-4 overflow-hidden">
-        {/* Toolbar */}
-        {!readOnly && (
-          <div className="flex flex-wrap gap-2 p-2 bg-gray-700 rounded-lg border border-gray-600">
-            <Button
-              size="sm"
-              variant={editor.isActive('bold') ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <Bold className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={editor.isActive('italic') ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <Italic className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={editor.isActive('heading', { level: 1 }) ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <Heading1 className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={editor.isActive('heading', { level: 2 }) ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <Heading2 className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={editor.isActive('heading', { level: 3 }) ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <Heading3 className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={editor.isActive('bulletList') ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <List className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={editor.isActive('orderedList') ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <ListOrdered className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={editor.isActive('blockquote') ? 'default' : 'outline'}
-              onClick={() => editor.chain().focus().toggleBlockquote().run()}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <Quote className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                const url = window.prompt('Enter URL')
-                if (url) {
-                  editor.chain().focus().setLink({ href: url }).run()
-                }
-              }}
-              className="border-gray-600 text-gray-200 hover:bg-gray-600"
-            >
-              <LinkIcon className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        {!readOnly && (
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => document.getElementById('markdown-import')?.click()}
-              className="border-blue-400/30 text-blue-300 hover:bg-blue-500/20"
-            >
-              <Upload className="h-4 w-4 mr-1" />
-              Import .md
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleExportMarkdown}
-              className="border-green-400/30 text-green-300 hover:bg-green-500/20"
-            >
-              <Download className="h-4 w-4 mr-1" />
-              Export .md
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setIsSideBySide(!isSideBySide)}
-              className="border-purple-400/30 text-purple-300 hover:bg-purple-500/20"
-            >
-              {isSideBySide ? (
-                <>
-                  <Layout className="h-4 w-4 mr-1" />
-                  Stacked
-                </>
-              ) : (
-                <>
-                  <LayoutGrid className="h-4 w-4 mr-1" />
-                  Side by Side
-                </>
-              )}
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleSaveContent}
-              disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-            >
-              <Save className="h-4 w-4 mr-1" />
-              {isSubmitting ? 'Submitting...' : 'Save'}
-            </Button>
-            
-          </div>
-        )}
+      <div className="flex-1 p-3 sm:p-6 space-y-4 overflow-hidden">
+        {/* Layout Toggle */}
+        <div className="flex justify-end">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsSideBySide(!isSideBySide)}
+            className="border-purple-400/30 text-purple-300 hover:bg-purple-500/20 hidden sm:flex"
+          >
+            {isSideBySide ? (
+              <>
+                <Layout className="h-4 w-4 mr-1" />
+                Stacked
+              </>
+            ) : (
+              <>
+                <LayoutGrid className="h-4 w-4 mr-1" />
+                Side by Side
+              </>
+            )}
+          </Button>
+        </div>
 
         {/* Hidden file input */}
         <input
@@ -464,68 +421,29 @@ export function TipTapEditor({
 
         {/* Editor and Preview Layout */}
         {isSideBySide ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-0 h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 editor-container">
             {/* Raw Editor Content */}
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-green-400 font-semibold">Raw Editor</h4>
-              </div>
-              <div className="flex-1 border border-gray-600 rounded-lg overflow-hidden bg-gray-900 flex flex-col">
-                                  <textarea
-                    value={markdownContent}
-                    onChange={(e) => {
-                      setMarkdownContent(e.target.value)
-                      onContentChange?.(e.target.value)
-                    }}
-                    onScroll={(e) => {
-                      console.log('📜 Textarea scroll event:', {
-                        scrollTop: e.currentTarget.scrollTop,
-                        scrollHeight: e.currentTarget.scrollHeight,
-                        clientHeight: e.currentTarget.clientHeight,
-                        maxScroll: e.currentTarget.scrollHeight - e.currentTarget.clientHeight
-                      })
-                    }}
-                    onLoad={(e) => {
-                      console.log('📝 Textarea loaded:', {
-                        scrollHeight: e.currentTarget.scrollHeight,
-                        clientHeight: e.currentTarget.clientHeight,
-                        offsetHeight: e.currentTarget.offsetHeight
-                      })
-                    }}
-                    className="flex-1 bg-gray-900 text-gray-100 text-sm font-mono whitespace-pre-wrap border-none outline-none resize-none p-4 overflow-y-auto custom-scrollbar"
-                    placeholder="Edit raw markdown here..."
-                  />
+            <div>
+              <h4 className="text-green-400 font-semibold mb-2">Raw Editor</h4>
+              <div className="border border-gray-600 rounded-lg bg-gray-900">
+                <textarea
+                  value={markdownContent}
+                  onChange={(e) => {
+                    setMarkdownContent(e.target.value)
+                    onContentChange?.(e.target.value)
+                  }}
+                  className="w-full bg-gray-900 text-gray-100 text-sm font-mono border-none outline-none p-2 sm:p-4 custom-scrollbar scroll-textarea"
+                  placeholder="Edit raw markdown here..."
+                />
               </div>
             </div>
 
             {/* Preview Section */}
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-green-400 font-semibold">Preview</h4>
-              </div>
-              <div className="flex-1 border border-gray-600 rounded-lg overflow-hidden bg-gray-900 flex flex-col">
-                <div 
-                  className="flex-1 overflow-y-auto custom-scrollbar scrollable-container"
-                  onScroll={(e) => {
-                    console.log('📜 Preview scroll event:', {
-                      scrollTop: e.currentTarget.scrollTop,
-                      scrollHeight: e.currentTarget.scrollHeight,
-                      clientHeight: e.currentTarget.clientHeight,
-                      maxScroll: e.currentTarget.scrollHeight - e.currentTarget.clientHeight
-                    })
-                  }}
-                  ref={(el) => {
-                    if (el) {
-                      console.log('📖 Preview container loaded:', {
-                        scrollHeight: el.scrollHeight,
-                        clientHeight: el.clientHeight,
-                        offsetHeight: el.offsetHeight,
-                        style: el.style.cssText
-                      })
-                    }
-                  }}
-                >
-                  <div className="p-4 prose prose-invert max-w-none">
+            <div>
+              <h4 className="text-green-400 font-semibold mb-2">Preview</h4>
+              <div className="border border-gray-600 rounded-lg bg-gray-900">
+                <div className="custom-scrollbar scroll-preview">
+                  <div className="p-2 sm:p-4 prose prose-invert max-w-none prose-sm sm:prose-base">
                     <EnhancedMarkdownRenderer 
                       content={markdownContent}
                       className="text-gray-100"
@@ -540,29 +458,14 @@ export function TipTapEditor({
             {/* Raw Editor Content */}
             <div>
               <h4 className="text-green-400 font-semibold mb-2">Raw Editor</h4>
-              <div className="border border-gray-600 rounded-lg overflow-hidden bg-gray-900">
+              <div className="border border-gray-600 rounded-lg bg-gray-900">
                 <textarea
                   value={markdownContent}
                   onChange={(e) => {
                     setMarkdownContent(e.target.value)
                     onContentChange?.(e.target.value)
                   }}
-                  onScroll={(e) => {
-                    console.log('📜 Stacked Textarea scroll event:', {
-                      scrollTop: e.currentTarget.scrollTop,
-                      scrollHeight: e.currentTarget.scrollHeight,
-                      clientHeight: e.currentTarget.clientHeight,
-                      maxScroll: e.currentTarget.scrollHeight - e.currentTarget.clientHeight
-                    })
-                  }}
-                  onLoad={(e) => {
-                    console.log('📝 Stacked Textarea loaded:', {
-                      scrollHeight: e.currentTarget.scrollHeight,
-                      clientHeight: e.currentTarget.clientHeight,
-                      offsetHeight: e.currentTarget.offsetHeight
-                    })
-                  }}
-                  className="w-full min-h-[400px] bg-gray-900 text-gray-100 text-sm font-mono whitespace-pre-wrap border-none outline-none resize-none p-4 overflow-y-auto custom-scrollbar"
+                  className="w-full bg-gray-900 text-gray-100 text-sm font-mono border-none outline-none p-4 custom-scrollbar stacked-textarea"
                   placeholder="Edit raw markdown here..."
                 />
               </div>
@@ -570,31 +473,9 @@ export function TipTapEditor({
 
             {/* Preview Section */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-green-400 font-semibold">Preview</h4>
-              </div>
-              <div className="border border-gray-600 rounded-lg overflow-hidden bg-gray-900">
-                <div 
-                  className="min-h-[400px] overflow-y-auto custom-scrollbar scrollable-container"
-                  onScroll={(e) => {
-                    console.log('📜 Stacked Preview scroll event:', {
-                      scrollTop: e.currentTarget.scrollTop,
-                      scrollHeight: e.currentTarget.scrollHeight,
-                      clientHeight: e.currentTarget.clientHeight,
-                      maxScroll: e.currentTarget.scrollHeight - e.currentTarget.clientHeight
-                    })
-                  }}
-                  ref={(el) => {
-                    if (el) {
-                      console.log('📖 Stacked Preview container loaded:', {
-                        scrollHeight: el.scrollHeight,
-                        clientHeight: el.clientHeight,
-                        offsetHeight: el.offsetHeight,
-                        style: el.style.cssText
-                      })
-                    }
-                  }}
-                >
+              <h4 className="text-green-400 font-semibold mb-2">Preview</h4>
+              <div className="border border-gray-600 rounded-lg bg-gray-900">
+                <div className="custom-scrollbar stacked-preview">
                   <div className="p-4 prose prose-invert max-w-none">
                     <EnhancedMarkdownRenderer 
                       content={markdownContent}

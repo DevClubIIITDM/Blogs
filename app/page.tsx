@@ -126,14 +126,14 @@ export default function HomePage() {
         {/* Stats Section */}
         <section className="py-16 relative z-10">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {stats.map((stat, index) => (
-                <div key={index} className="interactive-card glass-morphism p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+                <div key={index} className="interactive-card glass-morphism p-4 sm:p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
                   <div className="mx-auto w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-4">
                     <stat.icon className="h-6 w-6 text-white" />
                   </div>
-                  <div className="text-3xl font-bold text-white text-shimmer">{stat.value}</div>
-                  <div className="text-sm text-white/80">{stat.label}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white text-shimmer">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-white/80">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -144,8 +144,8 @@ export default function HomePage() {
         <section className="py-16 relative z-10">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white">About the Club</h2>
-              <p className="text-xl text-white/80">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">About the Club</h2>
+              <p className="text-base sm:text-lg lg:text-xl text-white/80">
                 The Developers Club is a vibrant community of students and professionals passionate about technology, coding, and innovation. We organize workshops, hackathons, and collaborative projects to foster learning and growth. Whether you are a beginner or an expert, you will find a welcoming space to connect, share, and create together.
               </p>
             </div>
@@ -208,7 +208,7 @@ export default function HomePage() {
                   size="lg"
                   className="text-lg px-8 button-epic"
                 >
-                  <Link href="https://developersclubiiitdm.vercel.app/home" target="_blank" rel="noopener noreferrer">
+                  <Link href="https://devclub.iiitdm.ac.in" target="_blank" rel="noopener noreferrer">
                     Join Our Club
                   </Link>
                 </Button>

@@ -420,12 +420,12 @@ export default function WriteForUsPage() {
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-3 mb-4">
               <FileText className="h-8 w-8 text-blue-400" />
-              <h1 className="text-4xl lg:text-5xl font-bold text-white">Write for Developers Blog</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white">Write for Developers Blog</h1>
             </div>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-white/80 max-w-2xl mx-auto px-4">
               Share your knowledge and contribute to our community blog. Upload your markdown file and let's publish your insights!
             </p>
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2 flex-wrap px-4">
               <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-400/30">
                 <Users className="h-3 w-3 mr-1" />
                 Community Writers
@@ -506,37 +506,7 @@ export default function WriteForUsPage() {
                     />
                   </div>
 
-                  {/* Editor Option */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <label className="text-white font-medium">Content Creation</label>
-                      <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 text-xs">
-                        Optional
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <Button
-                        type="button"
-                        variant={!useEditor ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setUseEditor(false)}
-                        className={!useEditor ? "bg-green-600 hover:bg-green-700" : "border-white/20 text-white hover:bg-white/10"}
-                      >
-                        <File className="h-4 w-4 mr-1" />
-                        Upload .md File
-                      </Button>
-                      <Button
-                        type="button"
-                        variant={useEditor ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setUseEditor(true)}
-                        className={useEditor ? "bg-blue-600 hover:bg-blue-700" : "border-white/20 text-white hover:bg-white/10"}
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Use Rich Editor
-                      </Button>
-                    </div>
-                  </div>
+                  
 
                   {/* Markdown File Upload - Required when not using editor */}
                   {!useEditor && (

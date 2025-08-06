@@ -50,10 +50,10 @@ export function BlogFilters({ categories, allPosts }: BlogFiltersProps) {
     <>
       {/* Filters */}
       <section className="relative z-10">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-              <div className="relative flex-1 lg:w-80">
+        <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+          <div className="flex flex-col lg:flex-row gap-2 sm:gap-4 items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full lg:w-auto">
+              <div className="relative flex-1 lg:w-80 min-w-0">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search articles..."

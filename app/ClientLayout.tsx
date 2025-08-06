@@ -24,8 +24,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       }}
       signInUrl="/login"
       signUpUrl="/login"
-      afterSignInUrl="/"
-      afterSignUpUrl="/"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
+
     >
       {children}
     </ClerkProvider>

@@ -1,22 +1,8 @@
 "use client"
 
 import { SignIn } from "@clerk/nextjs"
-import { useState } from "react"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [error, setError] = useState("")
-
-  const validateEmail = (email: string) => {
-    const domain = email.split('@')[1]?.toLowerCase()
-    if (domain !== 'iiitdm.ac.in') {
-      setError("Only @iiitdm.ac.in email addresses are allowed")
-      return false
-    }
-    setError("")
-    return true
-  }
-
   return (
     <div className="min-h-screen hero-background flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
@@ -53,9 +39,10 @@ export default function LoginPage() {
                 colorText: "#f1f5fa",
               },
             }}
-            signUpUrl="/login"
-            afterSignInUrl="/"
-            afterSignUpUrl="/"
+            routing="path"
+            path="/login"
+            fallbackRedirectUrl="/"
+            forceRedirectUrl="/"
           />
         </div>
 
@@ -67,4 +54,4 @@ export default function LoginPage() {
       </div>
     </div>
   )
-} 
+}

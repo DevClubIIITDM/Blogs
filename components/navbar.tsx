@@ -67,7 +67,7 @@ function AuthSection() {
   return (
     <div className="flex items-center">
       <div className="flex items-center space-x-2">
-        <SignInButton mode="modal">
+        <Link href="/login">
           <Button variant="ghost" className="button-epic auth-button">
             Login
             <svg 
@@ -85,7 +85,7 @@ function AuthSection() {
               <line x1="15" y1="12" x2="3" y2="12"/>
             </svg>
           </Button>
-        </SignInButton>
+        </Link>
       </div>
     </div>
   )
