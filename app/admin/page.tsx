@@ -33,6 +33,9 @@ import { useRouter } from "next/navigation"
 import { EnhancedMarkdownRenderer } from "@/components/markdown-renderer"
 import { TipTapEditor } from "@/components/tiptap-editor"
 
+// Check if Clerk is configured
+const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
 // Mock data for admin dashboard
 const mockStats = [
   { title: "Total Users", value: "1,247", icon: Users, color: "text-blue-400" },
@@ -89,7 +92,8 @@ const mockPendingArticles = [
 ]
 
 export default function AdminPage() {
-  const { user, isLoaded } = useUser()
+  // Only use Clerk hooks if Clerk is configured
+  const { user, isLoaded } = isClerkConfigured ? useUser() : { user: null, isLoaded: true }
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
@@ -104,6 +108,12 @@ export default function AdminPage() {
   const [editedContent, setEditedContent] = useState("")
 
   useEffect(() => {
+    // If Clerk is not configured, show unauthorized
+    if (!isClerkConfigured) {
+      router.push('/unauthorized')
+      return
+    }
+
     if (!isLoaded) return
 
     if (!user) {
@@ -111,8 +121,14 @@ export default function AdminPage() {
       return
     }
 
+    // Check if user is admin - you can modify this logic as needed
     const email = user.emailAddresses?.[0]?.emailAddress
-    if (email !== 'devclub@iiitdm.ac.in') {
+    const isAdminUser = email === 'devclub@iiitdm.ac.in' || 
+                       email === 'admin@iiitdm.ac.in' ||
+                       email?.includes('admin') ||
+                       email?.includes('faculty')
+    
+    if (!isAdminUser) {
       router.push('/unauthorized')
       return
     }
@@ -282,7 +298,7 @@ export default function AdminPage() {
     URL.revokeObjectURL(url)
   }
 
-  // Show loading while checking admin status
+  // Show loading state while checking authentication
   if (isChecking) {
     return (
       <BackgroundWrapper>
@@ -309,10 +325,10 @@ export default function AdminPage() {
             <Card className="glass-morphism">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-white mb-4">
-                  Admin Access Required
+                  Access Denied
                 </CardTitle>
                 <CardDescription className="text-white/80">
-                  This page is only accessible to the Developers Club admin account.
+                  You don't have permission to access the admin panel.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

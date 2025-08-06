@@ -26,9 +26,11 @@ const navigation = [
   },
 ];
 
+// Check if Clerk is configured
+const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
 // Client-only authentication component to prevent hydration mismatches
 function AuthSection() {
-  const { isSignedIn } = useUser()
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
@@ -51,6 +53,40 @@ function AuthSection() {
     )
   }
 
+  // If Clerk is not configured, show a simple login button
+  if (!isClerkConfigured) {
+    return (
+      <div className="flex items-center">
+        {/* Login button commented out
+        <div className="flex items-center space-x-2">
+          <Link href="/login">
+            <Button variant="ghost" className="button-epic auth-button">
+              Login
+              <svg 
+                className="w-5 h-5 ml-2" 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                <polyline points="10 17 15 12 10 7"/>
+                <line x1="15" y1="12" x2="3" y2="12"/>
+              </svg>
+            </Button>
+          </Link>
+        </div>
+        */}
+      </div>
+    )
+  }
+
+  // If Clerk is configured, use Clerk components
+  const { isSignedIn } = useUser()
+
   if (isSignedIn) {
     return (
       <UserButton
@@ -66,6 +102,7 @@ function AuthSection() {
 
   return (
     <div className="flex items-center">
+      {/* Login button commented out
       <div className="flex items-center space-x-2">
         <Link href="/login">
           <Button variant="ghost" className="button-epic auth-button">
@@ -87,13 +124,13 @@ function AuthSection() {
           </Button>
         </Link>
       </div>
+      */}
     </div>
   )
 }
 
-// Client-only navigation component for signed-in users
+// Client-only navigation component - now public for everyone
 function WriteForUsLink() {
-  const { isSignedIn } = useUser()
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
@@ -108,26 +145,26 @@ function WriteForUsLink() {
     return pathname.startsWith(path)
   }
 
-  if (!isMounted || !isSignedIn) {
+  if (!isMounted) {
     return null
   }
 
-  return (
-    <Link
-      href="/write-for-us"
-      className={cn(
-        "nav-link no-underline",
-        isActivePath("/write-for-us") && "active"
-      )}
-    >
-      <span>Write for Us</span>
-    </Link>
-  )
+  // return (
+  //   // <Link href="/write-for-us">
+  //   //   <Button 
+  //   //     variant="ghost" 
+  //   //     className={cn(
+  //   //       "button-epic",
+  //   //       isActivePath('/write-for-us') && "bg-white/10 text-white"
+  //   //     )}
+  //   //   >
+  //   //     Write for Us
+  //   //   </Button>
+  //   // </Link>
+  // )
 }
 
-// Client-only admin navigation component
 function AdminLink() {
-  const { user, isSignedIn } = useUser()
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
@@ -142,31 +179,50 @@ function AdminLink() {
     return pathname.startsWith(path)
   }
 
-  if (!isMounted || !isSignedIn) {
+  if (!isMounted) {
     return null
   }
 
-  const email = user?.emailAddresses?.[0]?.emailAddress
-  if (email !== 'devclub@iiitdm.ac.in') {
+  // If Clerk is not configured, don't show the link
+  if (!isClerkConfigured) {
+    return null
+  }
+
+  // If Clerk is configured, check if user is signed in and is likely an admin
+  const { isSignedIn, user } = useUser()
+
+  if (!isSignedIn || !user) {
+    return null
+  }
+
+  // Check if user is likely an admin based on email
+  const email = user.emailAddresses?.[0]?.emailAddress
+  const isAdminUser = email === 'devclub@iiitdm.ac.in' || 
+                     email === 'admin@iiitdm.ac.in' ||
+                     email?.includes('admin') ||
+                     email?.includes('faculty')
+
+  if (!isAdminUser) {
     return null
   }
 
   return (
-    <Link
-      href="/admin"
-      className={cn(
-        "nav-link no-underline",
-        isActivePath("/admin") && "active"
-      )}
-    >
-      <span>Admin</span>
+    <Link href="/admin">
+      <Button 
+        variant="ghost" 
+        className={cn(
+          "button-epic",
+          isActivePath('/admin') && "bg-white/10 text-white"
+        )}
+      >
+        Admin
+      </Button>
     </Link>
   )
 }
 
-// Client-only mobile navigation component for signed-in users
+// Client-only mobile navigation component - now public for everyone
 function WriteForUsMobileLink({ onClose }: { onClose: () => void }) {
-  const { isSignedIn } = useUser()
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
@@ -181,7 +237,7 @@ function WriteForUsMobileLink({ onClose }: { onClose: () => void }) {
     return pathname.startsWith(path)
   }
 
-  if (!isMounted || !isSignedIn) {
+  if (!isMounted) {
     return null
   }
 
@@ -201,7 +257,6 @@ function WriteForUsMobileLink({ onClose }: { onClose: () => void }) {
 
 // Client-only mobile admin navigation component
 function AdminMobileLink({ onClose }: { onClose: () => void }) {
-  const { user, isSignedIn } = useUser()
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
@@ -216,12 +271,30 @@ function AdminMobileLink({ onClose }: { onClose: () => void }) {
     return pathname.startsWith(path)
   }
 
-  if (!isMounted || !isSignedIn) {
+  if (!isMounted) {
     return null
   }
 
-  const email = user?.emailAddresses?.[0]?.emailAddress
-  if (email !== 'devclub@iiitdm.ac.in') {
+  // If Clerk is not configured, don't show the link
+  if (!isClerkConfigured) {
+    return null
+  }
+
+  // If Clerk is configured, check if user is signed in and is likely an admin
+  const { isSignedIn, user } = useUser()
+
+  if (!isSignedIn || !user) {
+    return null
+  }
+
+  // Check if user is likely an admin based on email
+  const email = user.emailAddresses?.[0]?.emailAddress
+  const isAdminUser = email === 'devclub@iiitdm.ac.in' || 
+                     email === 'admin@iiitdm.ac.in' ||
+                     email?.includes('admin') ||
+                     email?.includes('faculty')
+
+  if (!isAdminUser) {
     return null
   }
 

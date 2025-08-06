@@ -10,8 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, FileText, Users, Award, Send, CheckCircle, Upload, File, X, AlertCircle, Edit } from "lucide-react"
 import { BackgroundWrapper } from "@/components/background-wrapper"
-import { useUser } from "@clerk/nextjs"
-import { useIIITDMValidation } from "@/hooks/use-iiitdm-validation"
 import { MarkdownRenderer } from "@/components/markdown-renderer"
 import { TipTapEditor } from "@/components/tiptap-editor"
 
@@ -29,8 +27,6 @@ const categories = [
 ]
 
 export default function WriteForUsPage() {
-  const { isSignedIn, user } = useUser()
-  const { isValid, isChecking } = useIIITDMValidation()
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [fileName, setFileName] = useState("")
@@ -73,7 +69,7 @@ export default function WriteForUsPage() {
         content: finalContent,
         size: useEditor ? new Blob([finalContent]).size : (uploadedFile?.size || 0)
       },
-      submittedBy: isSignedIn ? user?.emailAddresses?.[0]?.emailAddress : "Anonymous",
+      submittedBy: "Anonymous", // Allow anonymous submissions
       submittedAt: new Date().toISOString()
     }
     
@@ -230,7 +226,7 @@ export default function WriteForUsPage() {
           content: content,
           size: new Blob([content]).size
         },
-        submittedBy: isSignedIn ? user?.emailAddresses?.[0]?.emailAddress : "Anonymous",
+        submittedBy: "Anonymous", // Allow anonymous submissions
         submittedAt: new Date().toISOString()
       }
       
@@ -257,86 +253,6 @@ export default function WriteForUsPage() {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  // Show loading while checking validation
-  if (isChecking) {
-    return (
-      <BackgroundWrapper>
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism">
-              <CardContent className="pt-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                <p className="text-white/80">Verifying your access...</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </BackgroundWrapper>
-    )
-  }
-
-  // Show unauthorized if not IIITDM email
-  if (!isValid) {
-    return (
-      <BackgroundWrapper>
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-white mb-4">
-                  Access Restricted
-                </CardTitle>
-                <CardDescription className="text-white/80">
-                  This feature is only available to IIITDM students and staff with @iiitdm.ac.in email addresses.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button asChild className="w-full button-epic">
-                  <Link href="/">
-                    Return to Home
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </BackgroundWrapper>
-    )
-  }
-
-  if (!isSignedIn) {
-    return (
-      <BackgroundWrapper>
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-morphism">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-white mb-4">
-                  Sign In to Contribute
-                </CardTitle>
-                <CardDescription className="text-white/80">
-                  You need to be signed in to submit articles to our blog.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button asChild className="w-full button-epic">
-                  <Link href="/api/auth/signin">
-                    Sign In to Continue
-                  </Link>
-                </Button>
-                <Button asChild className="w-full button-epic">
-                  <Link href="/">
-                    Return to Home
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </BackgroundWrapper>
-    )
   }
 
   // Show only the editor if a file has been uploaded
@@ -382,14 +298,24 @@ export default function WriteForUsPage() {
                 </p>
                 <div className="space-y-3">
                   <Button asChild className="w-full button-epic">
-                    <Link href="/write-for-us" onClick={() => setIsSubmitted(false)}>
-                      Submit Another Article
-                    </Link>
-                  </Button>
-                  <Button asChild className="w-full button-epic">
                     <Link href="/">
                       Return to Home
                     </Link>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full button-epic-outline"
+                    onClick={() => {
+                      setIsSubmitted(false)
+                      setFormData({ title: "", excerpt: "", category: "", tags: "" })
+                      setFileContent("")
+                      setEditorContent("")
+                      setUploadedFile(null)
+                      setFileName("")
+                      setUseEditor(false)
+                    }}
+                  >
+                    Submit Another Article
                   </Button>
                 </div>
               </CardContent>

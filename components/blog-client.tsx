@@ -9,79 +9,25 @@ interface BlogClientProps {
 }
 
 export function BlogClient({ markdownPosts }: BlogClientProps) {
-  const [approvedArticles, setApprovedArticles] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetchApprovedArticles()
+    // Simulate loading for better UX
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 500)
+
+    return () => clearTimeout(timer)
   }, [])
 
-  const fetchApprovedArticles = async () => {
-    try {
-      console.log('Fetching approved articles from /api/blog-posts/')
-      const response = await fetch('/api/blog-posts/')
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      
-      const data = await response.json()
-      console.log('Received data from blog-posts API:', data)
-      
-      if (data.success) {
-        console.log('Setting approved articles:', data.posts)
-        setApprovedArticles(data.posts || [])
-      } else {
-        console.error('API returned success: false:', data.message)
-      }
-    } catch (error) {
-      console.error('Error fetching approved articles:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Combine markdown posts with approved articles
-  const allPosts = [
-    ...markdownPosts,
-    ...approvedArticles.map(article => ({
-      id: article.fileIdentifier,
-      slug: article.fileIdentifier,
-      title: article.title,
-      excerpt: article.excerpt,
-      category: article.category,
-      tags: article.tags ? article.tags.split(',').map((tag: string) => tag.trim()) : [],
-      author: {
-        name: article.author || 'Community Member',
-        avatar: '/placeholder-user.jpg',
-        role: 'Contributor'
-      },
-      date: article.date,
-      content: article.content,
-      readTime: '5 min read',
-      image: '/placeholder.jpg',
-      isApprovedArticle: true // Flag to identify approved articles
-    }))
-  ]
+  // Use only markdown posts
+  const allPosts = markdownPosts
 
   // Get unique categories
   const categories = ["All", ...Array.from(new Set(allPosts.map(post => post.category)))]
 
   return (
     <>
-      {/* Community Articles Badge */}
-      {approvedArticles.length > 0 && (
-        <section className="relative z-10">
-          <div className="container mx-auto px-4 -mt-8 mb-8">
-            <div className="text-center">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-500/20 text-green-300 border border-green-400/30">
-                {approvedArticles.length} new community articles
-              </span>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Filters and Blog Posts Grid */}
       {isLoading ? (
         <div className="relative z-10">

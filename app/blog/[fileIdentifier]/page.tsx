@@ -112,8 +112,8 @@ export default async function BlogPost({ params }: { params: Promise<{ fileIdent
       {/* Back Button */}
       <section className="relative z-10">
         <div className="container mx-auto px-4 py-6">
-          <Button asChild variant="ghost" className="text-white hover:text-blue-300">
-            <Link href="/blog" className="flex items-center gap-2">
+          <Button asChild variant="ghost" className="text-black hover:text-blue-300">
+            <Link href="/blog" className="flex items-center gap-2 text-black">
               <ArrowLeft className="h-4 w-4" />
               Back to Blog
             </Link>
@@ -204,9 +204,6 @@ export default async function BlogPost({ params }: { params: Promise<{ fileIdent
             <footer className="mt-12 pt-8 border-t border-white/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                    <User className="h-6 w-6 text-white" />
-                  </div>
                   <div>
                     <div className="text-white font-medium">{post.author.name}</div>
                     <div className="text-white/60 text-sm">{post.author.role}</div>

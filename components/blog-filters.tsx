@@ -141,13 +141,6 @@ export function BlogFilters({ categories, allPosts }: BlogFiltersProps) {
 
                   {/* Author Info */}
                   <div className="flex items-center gap-3 mb-6">
-                    <Image
-                      src={post.author.avatar}
-                      alt={post.author.name}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
                     <div>
                       <div className="text-white font-medium">{post.author.name}</div>
                       <div className="text-white/60 text-sm">{post.author.role}</div>

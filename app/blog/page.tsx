@@ -1,7 +1,11 @@
 import { BackgroundWrapper } from "@/components/background-wrapper"
 import { BlogClient } from "@/components/blog-client"
+import { getSortedPostsData } from "@/lib/markdown"
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  // Load markdown posts
+  const markdownPosts = getSortedPostsData()
+  
   return (
     <BackgroundWrapper>
       {/* Header */}
@@ -17,7 +21,7 @@ export default function BlogPage() {
       </section>
 
       {/* Client component for dynamic content */}
-      <BlogClient markdownPosts={[]} />
+      <BlogClient markdownPosts={markdownPosts} />
     </BackgroundWrapper>
   )
 }

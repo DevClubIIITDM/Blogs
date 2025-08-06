@@ -68,10 +68,12 @@ const stats = [
   { icon: Zap, label: "Tech Events", value: "25+" },
 ]
 
-
+// Check if Clerk is configured
+const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
 export default function HomePage() {
-  const { isSignedIn } = useUser()
+  // Only use Clerk hooks if Clerk is configured
+  const { isSignedIn } = isClerkConfigured ? useUser() : { isSignedIn: false }
 
   return (
     <ScrollReveal>
@@ -101,9 +103,9 @@ export default function HomePage() {
                     </Link>
                   </Button>
                   {isSignedIn && (
-                    <Button asChild size="lg" className="text-lg px-8 button-epic">
+                    <Button asChild size="lg" variant="outline" className="text-lg px-8 button-epic-outline">
                       <Link href="/write-for-us">
-                        Write for Us
+                        Write for Us <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
                     </Button>
                   )}

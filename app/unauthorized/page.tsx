@@ -4,8 +4,12 @@ import { useUser, SignOutButton } from "@clerk/nextjs"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
+// Check if Clerk is configured
+const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
 export default function UnauthorizedPage() {
-  const { user } = useUser()
+  // Only use Clerk hooks if Clerk is configured
+  const { user } = isClerkConfigured ? useUser() : { user: null }
 
   return (
     <div className="min-h-screen hero-background flex items-center justify-center p-4">
@@ -46,11 +50,13 @@ export default function UnauthorizedPage() {
           </div>
 
           <div className="space-y-3">
-            <SignOutButton>
-              <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
-                Sign Out
-              </Button>
-            </SignOutButton>
+            {isClerkConfigured && (
+              <SignOutButton>
+                <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+                  Sign Out
+                </Button>
+              </SignOutButton>
+            )}
             
             <Button asChild className="w-full button-epic">
               <Link href="/">
