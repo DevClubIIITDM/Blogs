@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error in test endpoint:', error)
     return NextResponse.json(
-      { success: false, message: 'Test failed', error: error.message },
+      { success: false, message: 'Test failed', error: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }
