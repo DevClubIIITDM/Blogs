@@ -92,8 +92,10 @@ const mockPendingArticles = [
 ]
 
 export default function AdminPage() {
-  // Only use Clerk hooks if Clerk is configured
-  const { user, isLoaded } = isClerkConfigured ? useUser() : { user: null, isLoaded: true }
+  const [isClerkConfigured, setIsClerkConfigured] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<any>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
@@ -108,8 +110,36 @@ export default function AdminPage() {
   const [editedContent, setEditedContent] = useState("")
 
   useEffect(() => {
+    // Check if Clerk is configured
+    const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    const isConfigured = Boolean(clerkKey && 
+                        clerkKey.trim() !== '' &&
+                        clerkKey !== 'your_publishable_key_here')
+    
+    setIsClerkConfigured(isConfigured)
+    
+    if (isConfigured) {
+      // Dynamically import Clerk hooks only if configured
+      import("@clerk/nextjs").then(({ useUser }) => {
+        try {
+          const { user: clerkUser, isLoaded: clerkIsLoaded } = useUser()
+          setUser(clerkUser)
+          setIsLoaded(clerkIsLoaded)
+        } catch (error) {
+          console.log('Clerk not available:', error)
+          setIsLoaded(true)
+        }
+      }).catch(() => {
+        setIsLoaded(true)
+      })
+    } else {
+      setIsLoaded(true)
+    }
+  }, [])
+
+  useEffect(() => {
     // If Clerk is not configured, show unauthorized
-    if (!isClerkConfigured) {
+    if (!isClerkConfigured && isLoaded) {
       router.push('/unauthorized')
       return
     }
@@ -122,7 +152,7 @@ export default function AdminPage() {
     }
 
     // Check if user is admin - you can modify this logic as needed
-    const email = user.emailAddresses?.[0]?.emailAddress
+    const email = user?.emailAddresses?.[0]?.emailAddress
     const isAdminUser = email === 'devclub@iiitdm.ac.in' || 
                        email === 'admin@iiitdm.ac.in' ||
                        email?.includes('admin') ||
@@ -139,7 +169,7 @@ export default function AdminPage() {
     // Fetch real submissions and approved articles
     fetchSubmissions()
     fetchApprovedArticles()
-  }, [user, isLoaded, router])
+  }, [user, isLoaded, router, isClerkConfigured])
 
   const fetchSubmissions = async () => {
     try {

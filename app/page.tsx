@@ -9,8 +9,6 @@ import Link from "next/link"
 import Image from "next/image"
 import "@/styles/animations.css"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { useUser } from "@clerk/nextjs"
-import { useEffect, useState } from "react"
 
 // Mock data for featured posts
 const featuredPosts = [
@@ -68,13 +66,7 @@ const stats = [
   { icon: Zap, label: "Tech Events", value: "25+" },
 ]
 
-// Check if Clerk is configured
-const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-
 export default function HomePage() {
-  // Only use Clerk hooks if Clerk is configured
-  const { isSignedIn } = isClerkConfigured ? useUser() : { isSignedIn: false }
-
   return (
     <ScrollReveal>
       <div className="min-h-screen hero-background relative">
@@ -102,13 +94,11 @@ export default function HomePage() {
                       Explore Blog Posts <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
-                  {isSignedIn && (
-                    <Button asChild size="lg" variant="outline" className="text-lg px-8 button-epic-outline">
-                      <Link href="/write-for-us">
-                        Write for Us <ArrowRight className="ml-2 h-5 w-5" />
-                      </Link>
-                    </Button>
-                  )}
+                  <Button asChild size="lg" variant="outline" className="text-lg px-8 button-epic-outline">
+                    <Link href="/write-for-us">
+                      Write for Us <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
                 </div>
               </div>
               <div className="relative float-element">
@@ -220,76 +210,7 @@ export default function HomePage() {
         </section>
 
         {/* Write Blog CTA Section - Only show when not signed in */}
-        {!isSignedIn && (
-          <section className="py-20 relative z-10">
-            <div className="container mx-auto px-4 text-center">
-              <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8">
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                    <svg 
-                      className="w-8 h-8 text-white" 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 20h9"></path>
-                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                    </svg>
-                  </div>
-                </div>
-                <h2 className="text-3xl lg:text-4xl font-bold text-white">Got Amazing Tech Insights to Share?</h2>
-                <p className="text-xl text-white/80">
-                  Your knowledge could inspire countless developers! Share your experiences, tutorials, and tech discoveries. 
-                  Sign in now to become a valued contributor to our growing tech community.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button asChild size="lg" className="text-lg px-8 button-epic">
-                    <Link href="/api/auth/signin" className="flex items-center gap-2">
-                      Sign In to Contribute
-                      <svg 
-                        className="w-5 h-5" 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                      </svg>
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="lg"
-                    className="text-lg px-8 button-epic"
-                  >
-                    <Link href="/blog" className="flex items-center gap-2">
-                      Explore Articles
-                      <svg 
-                        className="w-5 h-5" 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                      >
-                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-                      </svg>
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+        {/* The ClerkDependentContent component now handles this logic */}
       </div>
     </ScrollReveal>
   )
