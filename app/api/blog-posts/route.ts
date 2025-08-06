@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
         fs.writeFileSync(approvedArticlesFile, JSON.stringify(testData, null, 2))
         return NextResponse.json({ success: true, message: 'Test write successful' })
       } catch (writeError) {
-        return NextResponse.json({ success: false, message: 'Test write failed', error: writeError.message })
+        return NextResponse.json({ success: false, message: 'Test write failed', error: writeError instanceof Error ? writeError.message : String(writeError) })
       }
     }
     
