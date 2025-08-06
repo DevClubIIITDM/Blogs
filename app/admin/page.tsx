@@ -143,15 +143,21 @@ export default function AdminPage() {
   const fetchApprovedArticles = async () => {
     try {
       const response = await fetch('/api/submit-article/')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const data = await response.json()
       
-      if (data.approvedArticles && data.approvedArticles.length > 0) {
+      console.log('Fetched approved articles:', data.approvedArticles)
+      
+      if (data.approvedArticles && Array.isArray(data.approvedArticles)) {
         setApprovedArticles(data.approvedArticles)
       } else {
         setApprovedArticles([])
       }
     } catch (error) {
       console.error('Error fetching approved articles:', error)
+      setApprovedArticles([])
     }
   }
 
@@ -202,8 +208,8 @@ export default function AdminPage() {
       
       if (result.success) {
         console.log(`Article ${articleToDelete.id} deleted successfully`);
-        // Refresh the approved articles list
-        fetchApprovedArticles();
+        // Refresh the approved articles list and wait for it to complete
+        await fetchApprovedArticles();
         alert('Article deleted successfully');
       } else {
         console.error('Failed to delete article:', result.message);

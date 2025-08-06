@@ -18,7 +18,8 @@ import {
   Link as LinkIcon,
   Download,
   Upload,
-  Save
+  Save,
+  Send
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { EnhancedMarkdownRenderer } from './markdown-renderer'
@@ -488,6 +489,20 @@ export function TipTapEditor({
           </div>
         )}
       </div>
+      {/* Submit Button for Blog Submission */}
+      {onSubmitArticle && !readOnly && (
+        <div className="flex justify-end mt-6">
+          <Button
+            type="button"
+            className="button-epic"
+            onClick={() => onSubmitArticle(markdownContent)}
+            disabled={isSubmitting || !markdownContent.trim()}
+          >
+            <Send className="h-4 w-4 mr-2" />
+            {isSubmitting ? 'Submitting...' : 'Submit Blog'}
+          </Button>
+        </div>
+      )}
     </div>
     </>
   )

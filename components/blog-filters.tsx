@@ -104,18 +104,6 @@ export function BlogFilters({ categories, allPosts }: BlogFiltersProps) {
                   key={post.id}
                   className="group glass-morphism p-6 rounded-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border border-white/10"
                 >
-                  {/* Post Image */}
-                  <div className="relative mb-6 overflow-hidden rounded-lg">
-                    <Image
-                      src={post.image}
-                      alt={post.title}
-                      width={400}
-                      height={200}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  </div>
-
                   {/* Post Meta */}
                   <div className="flex items-center gap-4 text-sm text-white/60 mb-4">
                     <div className="flex items-center gap-1">
