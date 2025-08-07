@@ -100,7 +100,7 @@ export default function ContactPage() {
                 <div className="space-y-2 text-sm text-white/80">
                   <div className="flex items-center space-x-2">
                     <Mail className="h-4 w-4" />
-                    <span>techclub@college.edu</span>
+                    <span>devclub@iiitdm.ac.in</span>
                   </div>
                 </div>
               </CardContent>
