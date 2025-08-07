@@ -1,196 +1,197 @@
-import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/db'; // Your Drizzle DB instance
+import { Blogs, Users } from '@/db/schema'; // Your Blogs table schema
+import { eq } from 'drizzle-orm';
+import { getCurrentSession } from '@/lib/server/session';
 
-// Force dynamic responses
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+/**
+ * Helper function to generate a URL-friendly slug from a string.
+ * @param title - The title to convert into a slug.
+ * @returns A sanitized, lowercased, and hyphenated slug.
+ */
+const generateSlug = (title: string): string => {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .replace(/&/g, 'and') // Replace & with 'and'
+    .replace(/[^\w\s-]/g, '') // Remove all non-word, non-space, non-hyphen chars
+    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with a single hyphen
+    .replace(/^-+|-+$/g, ''); // Trim leading/trailing hyphens
+};
 
-// File paths for persistent storage
-const dataDir = path.join(process.cwd(), 'data')
-const submissionsFile = path.join(dataDir, 'submissions.json')
-const approvedArticlesFile = path.join(dataDir, 'approved-articles.json')
-
-// Ensure data directory exists
-const ensureDataDir = () => {
-  try {
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true })
-      console.log('Created data directory:', dataDir)
-    }
-  } catch (error) {
-    console.error('Error creating data directory:', error)
-  }
-}
-
-// Helper functions to read/write data
-const readData = (filePath: string, defaultValue: any[] = []) => {
-  try {
-    ensureDataDir()
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf8')
-      const parsed = JSON.parse(data)
-      console.log(`Read data from ${filePath}:`, parsed.length, 'items')
-      return parsed
-    } else {
-      console.log(`File ${filePath} does not exist, creating with default value`)
-      writeData(filePath, defaultValue)
-      return defaultValue
-    }
-  } catch (error) {
-    console.error('Error reading data from', filePath, ':', error)
-    return defaultValue
-  }
-}
-
-const writeData = (filePath: string, data: any) => {
-  try {
-    ensureDataDir()
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
-    console.log(`Successfully wrote ${data.length} items to ${filePath}`)
-  } catch (error) {
-    console.error('Error writing data to', filePath, ':', error)
-    throw error
-  }
-}
-
+/**
+ * POST: Handles the submission of a new article.
+ * The article is added to the database with a status of 'pending' (approved = 0).
+ */
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    
-    const submissions = readData(submissionsFile)
-    
-    const submission = {
-      id: Date.now(),
-      ...body,
-      status: 'pending',
-      submittedAt: new Date().toISOString()
-    }
-    
-    submissions.push(submission)
-    writeData(submissionsFile, submissions)
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Article submitted successfully for review',
-      submissionId: submission.id
-    })
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: 'Failed to submit article' },
-      { status: 500 }
-    )
+  const { user } = await getCurrentSession();
+  if (!user) {
+    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   }
-}
-
-export async function GET() {
-  const submissions = readData(submissionsFile)
-  const approvedArticles = readData(approvedArticlesFile)
-  
-  return NextResponse.json({ submissions, approvedArticles })
-}
-
-// New endpoint to approve articles
-export async function PUT(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { action, articleId } = body
-    
-    const submissions = readData(submissionsFile)
-    const approvedArticles = readData(approvedArticlesFile)
-    
-    const submissionIndex = submissions.findIndex((sub: any) => sub.id === articleId)
-    
-    if (submissionIndex === -1) {
+    const body = await request.json();
+
+    // Destructure the expected fields from the request body
+    const { title, excerpt, category, tags, content } = body;
+
+    // Basic validation to ensure required fields are present
+    if (!title || !category || !content) {
       return NextResponse.json(
-        { success: false, message: 'Article not found' },
-        { status: 404 }
-      )
+        { success: false, message: 'Title, category, and content are required.' },
+        { status: 400 }
+      );
     }
-    
-    const article = submissions[submissionIndex]
-    
-    if (action === 'approve') {
-      // Move to approved articles - use filename as identifier
-      const filename = article.fileUpload?.name || article.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-      const fileIdentifier = filename.replace('.md', '')
-      
-      const approvedArticle = {
-        ...article,
-        status: 'approved',
-        approvedAt: new Date().toISOString(),
-        fileIdentifier: fileIdentifier
-      }
-      
-      approvedArticles.push(approvedArticle)
-      submissions.splice(submissionIndex, 1)
-      
-      writeData(approvedArticlesFile, approvedArticles)
-      writeData(submissionsFile, submissions)
-      
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Article approved and published',
-        article: approvedArticle
-      })
-    } else if (action === 'reject') {
-      // Remove from submissions
-      submissions.splice(submissionIndex, 1)
-      writeData(submissionsFile, submissions)
-      
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Article rejected',
-      })
-    }
-    
-    return NextResponse.json(
-      { success: false, message: 'Invalid action' },
-      { status: 400 }
-    )
+
+    const authorId = user.id;
+
+    // Calculate reading time (average reading speed is ~200 WPM)
+    const wordCount = content.trim().split(/\s+/).length;
+    const readingTime = Math.ceil(wordCount / 200);
+
+    const newArticleData = {
+      authorId,
+      title,
+      excerpt,
+      category,
+      tags, // Stored as a single text string
+      content,
+      readingTime,
+      approved: 0, // 0 for 'pending', 1 for 'approved'
+      slug: null, // Slug is generated upon approval to ensure it's based on the final title
+    };
+
+    // Insert the new article into the database and get the inserted record
+    const [insertedArticle] = await db.insert(Blogs).values(newArticleData).returning();
+
+    return NextResponse.json({
+      success: true,
+      message: 'Article submitted successfully for review.',
+      articleId: insertedArticle.id,
+    });
+
   } catch (error) {
+    console.error('Error submitting article:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to process action' },
+      { success: false, message: 'An unexpected error occurred while submitting the article.' },
       { status: 500 }
-    )
+    );
   }
 }
 
-// New endpoint to delete approved articles
+/**
+ * GET: Fetches all articles, separating them into 'submissions' (pending) and 'approved'.
+ */
+export async function GET() {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+  }
+  try {
+    // Fetch articles pending approval (approved = 0)
+    const submissionsResults = await db.select().from(Blogs).where(eq(Blogs.approved, 0)).leftJoin(Users, eq(Blogs.authorId, Users.user_id));
+
+    const submissions = submissionsResults.map(article => ({
+      ...article.blogs,
+      author: article.users?.name || 'Anonymous',
+      submittedAt: article.blogs.createdAt,
+    }))
+      // Fetch approved articles (approved = 1)
+    const approvedArticlesResults = await db.select().from(Blogs).where(eq(Blogs.approved, 1)).leftJoin(Users, eq(Blogs.authorId, Users.user_id));
+
+    const approvedArticles = approvedArticlesResults.map(article => ({
+      ...article.blogs,
+      author: article.users?.name || 'Anonymous',
+      submittedAt: article.blogs.createdAt,
+    }))
+    return NextResponse.json({ submissions, approvedArticles });
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    return NextResponse.json(
+      { success: false, message: 'Failed to fetch articles.' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PUT: Approves or rejects a submitted article.
+ */
+export async function PUT(request: NextRequest) {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+  }
+  if (user.role !== 'A') {
+    return NextResponse.json({ success: false, message: 'Forbidden: Admin access required.' }, { status: 403 });
+  }
+  try {
+    const { action, articleId } = await request.json();
+
+    if (!action || !articleId) {
+      return NextResponse.json({ success: false, message: 'Action and Article ID are required.' }, { status: 400 });
+    }
+
+    // Retrieve the article to ensure it exists before proceeding
+    const [article] = await db.select().from(Blogs).where(eq(Blogs.id, articleId));
+    if (!article) {
+      return NextResponse.json({ success: false, message: 'Article not found.' }, { status: 404 });
+    }
+
+    if (action === 'approve') {
+      const slug = generateSlug(article.title);
+      // NOTE: For a production app, you should check if this slug is already in use
+      // and append a unique identifier if necessary.
+
+      const [updatedArticle] = await db
+        .update(Blogs)
+        .set({ approved: 1, slug: slug })
+        .where(eq(Blogs.id, articleId))
+        .returning();
+
+      return NextResponse.json({ success: true, message: 'Article approved and published.', article: updatedArticle });
+
+    } else if (action === 'reject') {
+      // If an article is rejected, it's deleted from the database.
+      await db.delete(Blogs).where(eq(Blogs.id, articleId));
+      return NextResponse.json({ success: true, message: 'Article rejected and deleted.' });
+    }
+
+    return NextResponse.json({ success: false, message: 'Invalid action specified.' }, { status: 400 });
+
+  } catch (error) {
+    console.error('Error processing action:', error);
+    return NextResponse.json({ success: false, message: 'Failed to process action.' }, { status: 500 });
+  }
+}
+
+/**
+ * DELETE: Permanently deletes an article from the database.
+ */
 export async function DELETE(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const articleId = searchParams.get('id')
-    
-    if (!articleId) {
-      return NextResponse.json(
-        { success: false, message: 'Article ID is required' },
-        { status: 400 }
-      )
+    const { searchParams } = new URL(request.url);
+    const articleIdParam = searchParams.get('id');
+
+    if (!articleIdParam) {
+      return NextResponse.json({ success: false, message: 'Article ID is required.' }, { status: 400 });
     }
-    
-    const approvedArticles = readData(approvedArticlesFile)
-    const articleIndex = approvedArticles.findIndex((article: any) => article.id === parseInt(articleId))
-    
-    if (articleIndex === -1) {
-      return NextResponse.json(
-        { success: false, message: 'Article not found' },
-        { status: 404 }
-      )
+
+    const articleId = parseInt(articleIdParam, 10);
+    if (isNaN(articleId)) {
+      return NextResponse.json({ success: false, message: 'Invalid Article ID format.' }, { status: 400 });
     }
-    
-    // Remove the article
-    approvedArticles.splice(articleIndex, 1)
-    writeData(approvedArticlesFile, approvedArticles)
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Article deleted successfully'
-    })
+
+    // Attempt to delete the article and get the result
+    const result = await db.delete(Blogs).where(eq(Blogs.id, articleId));
+
+    // The 'pg' driver returns rowCount. Check if a row was actually deleted.
+    if (result.rowCount === 0) {
+      return NextResponse.json({ success: false, message: 'Article not found.' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, message: 'Article deleted successfully.' });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, message: 'Failed to delete article' },
-      { status: 500 }
-    )
+    console.error('Error deleting article:', error);
+    return NextResponse.json({ success: false, message: 'Failed to delete article.' }, { status: 500 });
   }
-} 
+}

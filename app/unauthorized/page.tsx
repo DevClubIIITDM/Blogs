@@ -1,41 +1,24 @@
 "use client"
 
-import { SignOutButton } from "@clerk/nextjs"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 
 export default function UnauthorizedPage() {
-  const [isClerkConfigured, setIsClerkConfigured] = useState(false)
   const [user, setUser] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Check if Clerk is configured
-    const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-    const isConfigured = Boolean(clerkKey && 
-                        clerkKey.trim() !== '' &&
-                        clerkKey !== 'your_publishable_key_here')
-    
-    setIsClerkConfigured(isConfigured)
-    
-    if (isConfigured) {
-      // Dynamically import Clerk hooks only if configured
-      import("@clerk/nextjs").then(({ useUser }) => {
-        try {
-          const { user: clerkUser } = useUser()
-          setUser(clerkUser)
-        } catch (error) {
-          console.log('Clerk not available:', error)
-        } finally {
-          setIsLoading(false)
-        }
-      }).catch(() => {
-        setIsLoading(false)
-      })
-    } else {
-      setIsLoading(false)
+    async function getUser() {
+      try {
+        const res = await fetch("/api/get-user")
+        const data = await res.json()
+        if (res.ok) setUser(data)
+        else setUser(null)
+      } catch {
+        setUser(null)
+      }
     }
+    getUser()
   }, [])
 
   return (
@@ -69,7 +52,7 @@ export default function UnauthorizedPage() {
         <div className="glass-morphism p-6 space-y-4">
           <div className="p-4 bg-red-500/10 border border-red-400/30 rounded-lg">
             <p className="text-sm text-red-300">
-              <strong>Current Email:</strong> {user?.emailAddresses?.[0]?.emailAddress || 'Unknown'}
+              <strong>Current Email:</strong> {user?.email}
             </p>
             <p className="text-sm text-red-300 mt-2">
               Only @iiitdm.ac.in email addresses are allowed to access this platform.
@@ -77,14 +60,6 @@ export default function UnauthorizedPage() {
           </div>
 
           <div className="space-y-3">
-            {isClerkConfigured && !isLoading && (
-              <SignOutButton>
-                <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
-                  Sign Out
-                </Button>
-              </SignOutButton>
-            )}
-            
             <Button asChild className="w-full button-epic">
               <Link href="/">
                 Return to Home

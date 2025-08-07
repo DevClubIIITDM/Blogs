@@ -97,15 +97,6 @@ export function Navbar() {
 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
-            {/* Admin for PC */}
-            {user?.role === "A" && (
-              <Link href="/admin" className="hidden md:inline-block">
-                <Button variant="ghost" className="text-sm font-medium">
-                  Admin
-                </Button>
-              </Link>
-            )}
-
             {/* Desktop Auth */}
             <div className="hidden md:flex">
               {user ? (
@@ -117,6 +108,14 @@ export function Navbar() {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                {user?.role === "A" && (
+                  <DropdownMenuItem asChild>
+                  <Link href="/admin">
+                  Admin
+                  </Link>
+                  </DropdownMenuItem>
+                  )}
+
                     <DropdownMenuItem asChild>
                       <Link href="/write-for-us">Write for Us</Link>
                     </DropdownMenuItem>

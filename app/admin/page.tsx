@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { 
   ArrowLeft, 
@@ -28,15 +27,11 @@ import {
   AlertTriangle
 } from "lucide-react"
 import { BackgroundWrapper } from "@/components/background-wrapper"
-import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { EnhancedMarkdownRenderer } from "@/components/markdown-renderer"
 import { TipTapEditor } from "@/components/tiptap-editor"
+import { User } from "@/lib/server/user"
 
-// Check if Clerk is configured
-const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-
-// Mock data for admin dashboard
 const mockStats = [
   { title: "Total Users", value: "1,247", icon: Users, color: "text-blue-400" },
   { title: "Published Articles", value: "89", icon: FileText, color: "text-green-400" },
@@ -92,15 +87,14 @@ const mockPendingArticles = [
 ]
 
 export default function AdminPage() {
-  const [isClerkConfigured, setIsClerkConfigured] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
   const [activeTab, setActiveTab] = useState("dashboard")
-  const [pendingArticles, setPendingArticles] = useState<any[]>(mockPendingArticles)
+  const [pendingArticles, setPendingArticles] = useState<any[]>([])
   const [approvedArticles, setApprovedArticles] = useState<any[]>([])
   const [selectedArticle, setSelectedArticle] = useState<any>(null)
   const [showReviewModal, setShowReviewModal] = useState(false)
@@ -109,73 +103,45 @@ export default function AdminPage() {
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState("")
 
+
   useEffect(() => {
-    // Check if Clerk is configured
-    const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-    const isConfigured = Boolean(clerkKey && 
-                        clerkKey.trim() !== '' &&
-                        clerkKey !== 'your_publishable_key_here')
-    
-    setIsClerkConfigured(isConfigured)
-    
-    if (isConfigured) {
-      // Dynamically import Clerk hooks only if configured
-      import("@clerk/nextjs").then(({ useUser }) => {
-        try {
-          const { user: clerkUser, isLoaded: clerkIsLoaded } = useUser()
-          setUser(clerkUser)
-          setIsLoaded(clerkIsLoaded)
-        } catch (error) {
-          console.log('Clerk not available:', error)
-          setIsLoaded(true)
+    setIsLoading(true);
+    async function getUser() {
+      try {
+        const res = await fetch("/api/get-user")
+        const data = await res.json()
+        if (res.ok) setUser(data)
+        else setUser(null)
+        if (!data) {
+          router.push('/');
+          return
         }
-      }).catch(() => {
-        setIsLoaded(true)
-      })
-    } else {
-      setIsLoaded(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    // If Clerk is not configured, show unauthorized
-    if (!isClerkConfigured && isLoaded) {
-      router.push('/unauthorized')
-      return
-    }
-
-    if (!isLoaded) return
-
-    if (!user) {
-      router.push('/login')
-      return
-    }
-
-    // Check if user is admin - you can modify this logic as needed
-    const email = user?.emailAddresses?.[0]?.emailAddress
-    const isAdminUser = email === 'devclub@iiitdm.ac.in' || 
-                       email === 'admin@iiitdm.ac.in' ||
-                       email?.includes('admin') ||
-                       email?.includes('faculty')
     
-    if (!isAdminUser) {
-      router.push('/unauthorized')
-      return
+        // Check if user is admin - you can modify this logic as needed
+        const isAdminUser = data.role === 'A';
+    
+        if (!isAdminUser) {
+          router.push('/')
+          return
+        }
+      } catch {
+        setUser(null)
+      }
     }
+
+    getUser()
 
     setIsAdmin(true)
     setIsChecking(false)
     
-    // Fetch real submissions and approved articles
     fetchSubmissions()
     fetchApprovedArticles()
-  }, [user, isLoaded, router, isClerkConfigured])
+  }, [])
 
   const fetchSubmissions = async () => {
     try {
       const response = await fetch('/api/submit-article/')
       const data = await response.json()
-      
       if (data.submissions && data.submissions.length > 0) {
         setPendingArticles(data.submissions)
       } else {
@@ -184,6 +150,8 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error fetching submissions:', error)
     }
+    console.log("pendingArticles", pendingArticles)
+    console.log("approvedArticles", approvedArticles)
   }
 
   const fetchApprovedArticles = async () => {
@@ -401,7 +369,7 @@ export default function AdminPage() {
               Manage the Developers Club platform, review articles, and monitor user activity
             </p>
             <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-400/30">
-              Admin Access: {user?.emailAddresses?.[0]?.emailAddress}
+              Admin Access: {user?.email}
             </Badge>
           </div>
         </div>
@@ -530,24 +498,13 @@ export default function AdminPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-white font-semibold mb-1">{article.title}</h3>
-                          <p className="text-white/60 text-sm mb-2">By: {(article as any).submittedBy || article.author || 'Unknown'}</p>
+                          <p className="text-white/60 text-sm mb-2">By: {article.author}</p>
                           <p className="text-white/70 text-sm mb-2">{article.excerpt}</p>
                           <div className="flex items-center gap-2 mb-3">
                             <Badge variant="outline" className="text-xs border-white/20 text-white/80">
                               {article.category}
                             </Badge>
-                            <span className="text-white/40 text-xs">Submitted: {article.submittedAt}</span>
-                            {article.fileUpload && (
-                              <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 text-xs">
-                                <File className="h-3 w-3 mr-1" />
-                                Markdown File
-                              </Badge>
-                            )}
-                            {article.fileUpload?.name && (
-                              <Badge variant="outline" className="text-xs border-blue-400/30 text-blue-300">
-                                ID: {article.fileUpload.name.replace('.md', '')}
-                              </Badge>
-                            )}
+                            <span className="text-white/40 text-xs">Submitted: {new Date(article.createdAt).toLocaleDateString('en-GB')}</span>
                           </div>
                           {article.tags && (
                             <div className="flex flex-wrap gap-1 mb-3">
@@ -567,7 +524,7 @@ export default function AdminPage() {
                             onClick={() => openReviewModal(article)}
                           >
                             <Eye className="h-4 w-4 mr-1" />
-                            Review
+                            View Content
                           </Button>
                           {article.fileUpload && (
                             <Button
@@ -648,7 +605,7 @@ export default function AdminPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-white font-semibold mb-1">{article.title}</h3>
-                          <p className="text-white/60 text-sm mb-2">By: {(article as any).submittedBy || article.author || 'Unknown'}</p>
+                          <p className="text-white/60 text-sm mb-2">By: {article.author || 'Anonymous'}</p>
                           <p className="text-white/70 text-sm mb-2">{article.excerpt}</p>
                           <div className="flex items-center gap-2 mb-3">
                             <Badge variant="outline" className="text-xs border-white/20 text-white/80">
@@ -723,15 +680,14 @@ export default function AdminPage() {
 
       {/* Article Review Modal */}
       {showReviewModal && selectedArticle && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-background flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Review Article</h2>
+                <h2 className="text-2xl font-bold">Review Article</h2>
                 <Button
                   variant="ghost"
                   onClick={() => setShowReviewModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
                 >
                   <X className="h-5 w-5" />
                 </Button>
@@ -740,12 +696,12 @@ export default function AdminPage() {
               <div className="space-y-6">
                 {/* Article Header */}
                 <div className="border-b border-gray-200 pb-4">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{selectedArticle.title}</h3>
-                  <p className="text-gray-600 mb-2">By: {selectedArticle.submittedBy || selectedArticle.author}</p>
-                  <p className="text-gray-700 mb-3">{selectedArticle.excerpt}</p>
+                  <h3 className="text-xl font-semibold mb-2">{selectedArticle.title}</h3>
+                  <p className="mb-2">By: {selectedArticle.author}</p>
+                  <p className="mb-3">{selectedArticle.excerpt}</p>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">{selectedArticle.category}</Badge>
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-sm">
                       {selectedArticle.status === 'approved' ? `Approved: ${selectedArticle.approvedAt}` : `Submitted: ${selectedArticle.submittedAt}`}
                     </span>
                   </div>
@@ -775,7 +731,7 @@ export default function AdminPage() {
                 {/* Article Content */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-gray-900">Article Content</h4>
+                    <h4 className="font-semibold">Article Content</h4>
                     <div className="flex gap-2">
                       <Button
                         size="sm"
@@ -798,16 +754,16 @@ export default function AdminPage() {
                   </div>
                   
                   {isEditing ? (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div className="border border-gray-200 rounded-lg p-4">
                       <TipTapEditor
                         content={editedContent}
                         onContentChange={handleContentUpdate}
                         placeholder="Edit article content..."
-                        className="bg-white"
+                        className="bg-background"
                       />
                     </div>
                   ) : (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+                    <div className="border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
                       <EnhancedMarkdownRenderer 
                         content={selectedArticle.content}
                         className="text-gray-800"
