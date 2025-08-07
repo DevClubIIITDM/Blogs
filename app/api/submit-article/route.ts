@@ -24,7 +24,7 @@ function randomSuffix(length = 4): string {
 }
 
 // Ensures slug is unique by appending -abcd if needed
-export async function generateUniqueSlug(baseSlug: string): Promise<string> {
+async function generateUniqueSlug(baseSlug: string): Promise<string> {
   let slug = baseSlug
 
   // Check if base slug exists
