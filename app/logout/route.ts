@@ -6,9 +6,9 @@ import { redirect } from "next/navigation";
 export async function GET(req: Request){
 	const { session } = await getCurrentSession();
 	if (!session) {
-		return {
-			error: "Unauthorized"
-		};
+		return new Response(null, {
+			status: 401
+		})
 	}
 
 	await invalidateSession(session.id);
