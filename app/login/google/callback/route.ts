@@ -40,10 +40,9 @@ export async function GET(request: Request): Promise<Response> {
 	const picture = claims.picture;
 	const email = claims.email;
 
-	// ALLOW EXTERNAL EMAILS FOR TESTING
-	// if (!email.endsWith("@iiitdm.ac.in")) {
-	// 	redirect(`/institute-email?email=${encodeURIComponent(email)}`);
-	// }
+	if (!email.endsWith("@iiitdm.ac.in")) {
+		redirect(`/unauthorized`);
+	}
 	
 	const existingUser = await getUserFromGoogleId(googleUserId);
 

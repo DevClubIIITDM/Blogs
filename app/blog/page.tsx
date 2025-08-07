@@ -4,7 +4,7 @@ import { getSortedPostsData } from "@/lib/markdown"
 
 export default async function BlogPage() {
   // Load markdown posts
-  const markdownPosts = getSortedPostsData()
+  const markdownPosts = await getSortedPostsData()
   
   return (
     <BackgroundWrapper>

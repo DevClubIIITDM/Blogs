@@ -19,6 +19,37 @@ const generateSlug = (title: string): string => {
     .replace(/^-+|-+$/g, ''); // Trim leading/trailing hyphens
 };
 
+function randomSuffix(length = 4): string {
+  return Math.random().toString(36).substring(2, 2 + length)
+}
+
+// Ensures slug is unique by appending -abcd if needed
+export async function generateUniqueSlug(baseSlug: string): Promise<string> {
+  let slug = baseSlug
+
+  // Check if base slug exists
+  const existing = await db
+    .select()
+    .from(Blogs)
+    .where(eq(Blogs.slug, slug))
+    .then(rows => rows.length > 0)
+
+  // If it doesn't exist, return it
+  if (!existing) return slug
+
+  // Keep trying random postfix until unique
+  while (true) {
+    const candidate = `${baseSlug}-${randomSuffix()}`
+    const exists = await db
+      .select()
+      .from(Blogs)
+      .where(eq(Blogs.slug, candidate))
+      .then(rows => rows.length > 0)
+
+    if (!exists) return candidate
+  }
+}
+
 /**
  * POST: Handles the submission of a new article.
  * The article is added to the database with a status of 'pending' (approved = 0).
@@ -125,11 +156,12 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'Forbidden: Admin access required.' }, { status: 403 });
   }
   try {
-    const { action, articleId } = await request.json();
+    const { action, articleId, newContent } = await request.json();
 
     if (!action || !articleId) {
       return NextResponse.json({ success: false, message: 'Action and Article ID are required.' }, { status: 400 });
     }
+
 
     // Retrieve the article to ensure it exists before proceeding
     const [article] = await db.select().from(Blogs).where(eq(Blogs.id, articleId));
@@ -137,10 +169,26 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Article not found.' }, { status: 404 });
     }
 
-    if (action === 'approve') {
-      const slug = generateSlug(article.title);
-      // NOTE: For a production app, you should check if this slug is already in use
-      // and append a unique identifier if necessary.
+    if (action === 'save' && newContent) {
+      if (newContent) {
+        await db
+        .update(Blogs)
+        .set({ content: newContent })
+        .where(eq(Blogs.id, articleId));
+      }
+      return NextResponse.json({ success: true, message: 'Article content updated successfully.' });
+    } else if (action === 'approve') {
+      const baseSlug = generateSlug(article.title);
+      const slug = await generateUniqueSlug(baseSlug);
+      const existing = await db
+      .select()
+      .from(Blogs)
+      .where(eq(Blogs.slug, slug));
+      
+      if (existing) {
+        
+      }
+
 
       const [updatedArticle] = await db
         .update(Blogs)
@@ -152,8 +200,11 @@ export async function PUT(request: NextRequest) {
 
     } else if (action === 'reject') {
       // If an article is rejected, it's deleted from the database.
-      await db.delete(Blogs).where(eq(Blogs.id, articleId));
-      return NextResponse.json({ success: true, message: 'Article rejected and deleted.' });
+      await db
+      .update(Blogs)
+      .set({ approved: 0 })
+      .where(eq(Blogs.id, articleId));
+      return NextResponse.json({ success: true, message: 'Article rejected.' });
     }
 
     return NextResponse.json({ success: false, message: 'Invalid action specified.' }, { status: 400 });
@@ -162,6 +213,7 @@ export async function PUT(request: NextRequest) {
     console.error('Error processing action:', error);
     return NextResponse.json({ success: false, message: 'Failed to process action.' }, { status: 500 });
   }
+
 }
 
 /**

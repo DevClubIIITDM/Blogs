@@ -156,37 +156,12 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CTA Section (from incoming branch) */}
-        {/*<section className="py-20 bg-blue-600 text-white">
-          <div className="container mx-auto px-4 text-center">
-            <div className="max-w-3xl mx-auto space-y-8">
-              <h2 className="text-3xl lg:text-4xl font-bold">Ready to Share Your Tech Journey?</h2>
-              <p className="text-xl opacity-90">
-                Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
-                beginner or expert, your voice matters.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" variant="secondary" className="text-lg px-8">
-                  <Link href="/login">Write for Us</Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-8 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
-                >
-                  <Link href="/about">Join Our Club</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>*/}
 
         {/* CTA Section (final) */}
         <section className="py-20 relative z-10">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white">Ready to Share Your Tech Journey?</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white">Ready to share your tech journey?</h2>
               <p className="text-xl text-white/80">
                 Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
                 beginner or expert, your voice matters.
@@ -209,8 +184,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Write Blog CTA Section - Only show when not signed in */}
-        {/* The ClerkDependentContent component now handles this logic */}
       </div>
     </ScrollReveal>
   )

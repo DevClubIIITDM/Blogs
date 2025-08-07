@@ -59,7 +59,7 @@ export function Navbar() {
       )}
     >
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-16 items-center gap-8">
           {/* Logo */}
           <Link
             href="/"
@@ -80,7 +80,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-4 ml-8">
+          <nav className="hidden md:flex items-center space-x-4">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -96,14 +96,14 @@ export function Navbar() {
           </nav>
 
           {/* Right Side */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 ml-auto">
             {/* Desktop Auth */}
             <div className="hidden md:flex">
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.picture || ""} />
+                      <AvatarImage src={user.picture} />
                       <AvatarFallback>{user.name?.[0] ?? "U"}</AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>

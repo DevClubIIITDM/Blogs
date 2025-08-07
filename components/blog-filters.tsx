@@ -27,7 +27,7 @@ export function BlogFilters({ categories, allPosts }: BlogFiltersProps) {
     const lowercaseQuery = searchTerm.toLowerCase()
     filteredPosts = filteredPosts.filter((post) => 
       post.title.toLowerCase().includes(lowercaseQuery) ||
-      post.excerpt.toLowerCase().includes(lowercaseQuery) ||
+      post.excerpt?.toLowerCase().includes(lowercaseQuery) ||
       post.tags?.some(tag => tag.toLowerCase().includes(lowercaseQuery))
     )
   }

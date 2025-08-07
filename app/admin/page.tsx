@@ -258,10 +258,24 @@ export default function AdminPage() {
         ...selectedArticle,
         content: editedContent
       }
+      
+      const response = await fetch('/api/submit-article/', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'save',
+          articleId: selectedArticle.id,
+          newContent: editedContent
+        }),
+      });
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to update article content');
+      }
 
-      // Here you would typically save to your API
-      // For now, we'll just update the local state
-      if (selectedArticle.status === 'approved') {
+      if (selectedArticle.approved > 0) {
         const updatedApprovedArticles = approvedArticles.map((article: any) => 
           article.id === selectedArticle.id ? updatedArticle : article
         )
@@ -383,7 +397,7 @@ export default function AdminPage() {
               { id: "dashboard", label: "Dashboard", icon: BarChart3 },
               { id: "articles", label: "Pending Articles", icon: FileText },
               { id: "approved", label: "Approved Articles", icon: CheckCircle },
-              { id: "users", label: "Users", icon: Users },
+              // { id: "users", label: "Users", icon: Users },
               { id: "settings", label: "Settings", icon: Settings },
             ].map((tab) => (
               <Button
@@ -611,7 +625,6 @@ export default function AdminPage() {
                             <Badge variant="outline" className="text-xs border-white/20 text-white/80">
                               {article.category}
                             </Badge>
-                            <span className="text-white/40 text-xs">Approved: {article.approvedAt}</span>
                             <Badge variant="secondary" className="bg-green-500/20 text-green-300 text-xs">
                               <CheckCircle className="h-3 w-3 mr-1" />
                               Published
@@ -702,31 +715,10 @@ export default function AdminPage() {
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">{selectedArticle.category}</Badge>
                     <span className="text-sm">
-                      {selectedArticle.status === 'approved' ? `Approved: ${selectedArticle.approvedAt}` : `Submitted: ${selectedArticle.submittedAt}`}
+                      {selectedArticle.approved > 0 ? `Approved` : `Submitted: ${selectedArticle.submittedAt}`}
                     </span>
                   </div>
                 </div>
-
-                {/* File Information */}
-                {selectedArticle.fileUpload && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-blue-900 mb-2">Markdown File</h4>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-blue-800">File: {selectedArticle.fileUpload.name}</p>
-                        <p className="text-blue-600 text-sm">Size: {(selectedArticle.fileUpload.size / 1024).toFixed(1)} KB</p>
-                      </div>
-                      <Button
-                        size="sm"
-                        onClick={() => downloadMarkdownFile(selectedArticle)}
-                        className="bg-blue-600 hover:bg-blue-700"
-                      >
-                        <Download className="h-4 w-4 mr-1" />
-                        Download
-                      </Button>
-                    </div>
-                  </div>
-                )}
 
                 {/* Article Content */}
                 <div>
@@ -780,7 +772,7 @@ export default function AdminPage() {
                   >
                     Close
                   </Button>
-                  {selectedArticle.status !== 'approved' && (
+                  {selectedArticle.approved > 0 && (
                     <>
                       <Button
                         variant="outline"
@@ -841,7 +833,7 @@ export default function AdminPage() {
       )}
 
       {/* Users Tab */}
-      {activeTab === "users" && (
+      {/* {activeTab === "users" && (
         <section className="relative z-10">
           <div className="container mx-auto px-4 py-8">
             <Card className="glass-morphism">
@@ -903,7 +895,7 @@ export default function AdminPage() {
             </Card>
           </div>
         </section>
-      )}
+      )} */}
 
       {/* Settings Tab */}
       {activeTab === "settings" && (

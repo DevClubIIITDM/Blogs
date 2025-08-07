@@ -1,25 +1,9 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useState, useEffect } from "react"
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function UnauthorizedPage() {
-  const [user, setUser] = useState<any>(null)
-
-  useEffect(() => {
-    async function getUser() {
-      try {
-        const res = await fetch("/api/get-user")
-        const data = await res.json()
-        if (res.ok) setUser(data)
-        else setUser(null)
-      } catch {
-        setUser(null)
-      }
-    }
-    getUser()
-  }, [])
 
   return (
     <div className="min-h-screen hero-background flex items-center justify-center p-4">
@@ -51,9 +35,6 @@ export default function UnauthorizedPage() {
 
         <div className="glass-morphism p-6 space-y-4">
           <div className="p-4 bg-red-500/10 border border-red-400/30 rounded-lg">
-            <p className="text-sm text-red-300">
-              <strong>Current Email:</strong> {user?.email}
-            </p>
             <p className="text-sm text-red-300 mt-2">
               Only @iiitdm.ac.in email addresses are allowed to access this platform.
             </p>
@@ -68,11 +49,6 @@ export default function UnauthorizedPage() {
           </div>
         </div>
 
-        <div className="text-center">
-          <p className="text-sm text-white/60">
-            If you believe this is an error, please contact your administrator
-          </p>
-        </div>
       </div>
     </div>
   )
