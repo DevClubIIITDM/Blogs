@@ -16,11 +16,6 @@ import {
 import { cn } from "@/lib/utils"
 import { User } from "@/lib/server/user"
 
-const navigation = [
-  { name: "Blog", href: "/blog" },
-  { name: "Contact", href: "/contact" },
-]
-
 function isActivePath(pathname: string, path: string) {
   return path === "/" ? pathname === path : pathname.startsWith(path)
 }
@@ -29,6 +24,22 @@ export function Navbar() {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+
+
+  let navigation = [
+    { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/contact" },
+  ]
+
+  if (user) {
+    navigation.push({ name: "Write for Us", href: "/write-for-us" })
+  }
+  if (user?.role === "A") {
+    navigation.push({ name: "Admin", href: "/admin" })
+  }
+
+
+
 
   useEffect(() => {
     async function getUser() {
@@ -108,17 +119,17 @@ export function Navbar() {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                {user?.role === "A" && (
+                {/* {user?.role === "A" && (
                   <DropdownMenuItem asChild>
                   <Link href="/admin">
                   Admin
                   </Link>
                   </DropdownMenuItem>
-                  )}
+                  )} */}
 
-                    <DropdownMenuItem asChild>
+                    {/* <DropdownMenuItem asChild>
                       <Link href="/write-for-us">Write for Us</Link>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                     <DropdownMenuItem asChild>
                       <form action="/logout" method="GET">
                         <button type="submit" className="w-full text-left">
@@ -159,14 +170,14 @@ export function Navbar() {
 
                   {user ? (
                     <>
-                      <DropdownMenuItem asChild>
+                      {/* <DropdownMenuItem asChild>
                         <Link href="/write-for-us">Write for Us</Link>
-                      </DropdownMenuItem>
-                      {user.role === "A" && (
+                      </DropdownMenuItem> */}
+                      {/* {user.role === "A" && (
                         <DropdownMenuItem asChild>
                           <Link href="/admin">Admin</Link>
                         </DropdownMenuItem>
-                      )}
+                      )} */}
                       <DropdownMenuItem asChild>
                         <form action="/logout" method="GET">
                           <button type="submit" className="w-full text-left">
