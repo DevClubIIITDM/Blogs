@@ -1,5 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
-import { getPostData, getAllPostIds } from '@/lib/markdown'
+import { redirect } from 'next/navigation'
 import { BackgroundWrapper } from '@/components/background-wrapper'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react'
@@ -9,9 +8,6 @@ import { db } from '@/db'
 import { Blogs, Users } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
