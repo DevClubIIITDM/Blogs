@@ -116,7 +116,7 @@ export default function HomePage() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-16 relative z-10">
+        {/* <section className="py-16 relative z-10">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {stats.map((stat, index) => (
@@ -130,7 +130,7 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* About the Club Section */}
         <section className="py-16 relative z-10">
