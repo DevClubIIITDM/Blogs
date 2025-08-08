@@ -10,54 +10,6 @@ import Image from "next/image"
 import "@/styles/animations.css"
 import { ScrollReveal } from "@/components/scroll-reveal"
 
-// Mock data for featured posts
-const featuredPosts = [
-  {
-    id: 1,
-    title: "Building Scalable Web Applications with Next.js 15",
-    excerpt:
-      "Explore the latest features in Next.js 15 and learn how to build performant, scalable web applications with the new App Router.",
-    author: {
-      name: "Sarah Chen",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "Full Stack Developer",
-    },
-    category: "Web Development",
-    date: "2024-01-15",
-    readTime: "8 min read",
-    image: "/placeholder.svg?height=200&width=400",
-  },
-  {
-    id: 2,
-    title: "Machine Learning in JavaScript: TensorFlow.js Deep Dive",
-    excerpt:
-      "Discover how to implement machine learning models directly in the browser using TensorFlow.js and create intelligent web applications.",
-    author: {
-      name: "Alex Rodriguez",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "AI/ML Engineer",
-    },
-    category: "Machine Learning",
-    date: "2024-01-12",
-    readTime: "12 min read",
-    image: "/placeholder.svg?height=200&width=400",
-  },
-  {
-    id: 3,
-    title: "Cybersecurity Best Practices for Modern Applications",
-    excerpt:
-      "Learn essential security practices to protect your applications from common vulnerabilities and cyber threats.",
-    author: {
-      name: "Marcus Johnson",
-      avatar: "/placeholder.svg?height=40&width=40",
-      role: "Security Specialist",
-    },
-    category: "Cybersecurity",
-    date: "2024-01-10",
-    readTime: "10 min read",
-    image: "/placeholder.svg?height=200&width=400",
-  },
-]
 
 const stats = [
   { icon: Users, label: "Active Members", value: "150+" },
@@ -84,8 +36,8 @@ export default function HomePage() {
                     Innovate. Learn. <span className="text-shimmer">Create.</span>
                   </h1>
                   <p className="text-xl text-white/80 max-w-lg">
-                    Join our community of passionate developers, designers, and tech enthusiasts. Share knowledge, build
-                    projects, and shape the future of technology.
+                    Join our community of developers and tech enthusiasts from IIITDM Kancheepuram. Share knowledge, build
+                    projects, and explore the latest in technology.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -127,6 +79,7 @@ export default function HomePage() {
                   <div className="text-2xl sm:text-3xl font-bold text-white text-shimmer">{stat.value}</div>
                   <div className="text-xs sm:text-sm text-white/80">{stat.label}</div>
                 </div>
+
               ))}
             </div>
           </div>
@@ -135,10 +88,12 @@ export default function HomePage() {
         {/* About the Club Section */}
         <section className="py-16 relative z-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8">
+            <div className="max-w-5xl mx-auto text-center space-y-4 mb-10 glass-morphism p-8">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">About the Club</h2>
               <p className="text-base sm:text-lg lg:text-xl text-white/80">
-                The Developers Club is a vibrant community of students and professionals passionate about technology, coding, and innovation. We organize workshops, hackathons, and collaborative projects to foster learning and growth. Whether you are a beginner or an expert, you will find a welcoming space to connect, share, and create together.
+                The Developers Club of IIITDM Kancheepuram bridges the gap between academic learning and practical skills by providing exposure to cutting-edge technologies.
+                Our mission is to foster innovation, peer learning, and continuous skill development through hackathons, hands-on workshops, and collaborative projects.
+                By nurturing a sustainable and inclusive environment, we empower students to stay updated with industry trends and tackle real-world tech challenges.
               </p>
             </div>
           </div>
@@ -147,24 +102,25 @@ export default function HomePage() {
         {/* About the Website Section */}
         <section className="py-20 relative z-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8 text-center">
+            <div className="max-w-5xl mx-auto space-y-8 glass-morphism p-8 text-center">
               <h2 className="text-3xl lg:text-4xl font-bold text-white">About the Website</h2>
               <p className="text-xl text-white/80">
-                This website is the digital home of the Developers Club. Here, you can explore insightful blog posts, stay updated on upcoming events, and connect with fellow tech enthusiasts. Built with Next.js and modern web technologies, our platform is designed to be fast, accessible, and community-driven.
+                This website is the official blog platform of the Developers Club at IIITDM Kancheepuram.
+                Here, you can explore technical articles and connect with fellow developers.
+                Built using modern web technologies, our platform reflects our commitment to openness, speed, and community-led learning.
               </p>
             </div>
           </div>
         </section>
 
-
         {/* CTA Section (final) */}
         <section className="py-20 relative z-10">
           <div className="container mx-auto px-4 text-center">
-            <div className="max-w-3xl mx-auto space-y-8 glass-morphism p-8">
+            <div className="max-w-5xl mx-auto space-y-8 glass-morphism p-8">
               <h2 className="text-3xl lg:text-4xl font-bold text-white">Ready to share your tech journey?</h2>
               <p className="text-xl text-white/80">
-                Join our community of writers and share your knowledge with fellow tech enthusiasts. Whether you're a
-                beginner or expert, your voice matters.
+                Become a part of our collaborative writing community and share your insights with tech enthusiasts across campus.
+                Whether you're just starting out or already experienced, your voice can inspire others.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="text-lg px-8 button-epic">
@@ -176,13 +132,14 @@ export default function HomePage() {
                   className="text-lg px-8 button-epic"
                 >
                   <Link href="https://devclub.iiitdm.ac.in" target="_blank" rel="noopener noreferrer">
-                    Join Our Club
+                    Visit Club Website
                   </Link>
                 </Button>
               </div>
             </div>
           </div>
         </section>
+
 
       </div>
     </ScrollReveal>
