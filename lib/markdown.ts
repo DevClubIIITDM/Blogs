@@ -1,18 +1,13 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
-import { remark } from 'remark'
-import html from 'remark-html'
-import remarkGfm from 'remark-gfm'
-
-const postsDirectory = path.join(process.cwd(), 'content/blog')
+import { db } from '@/db'
+import { Blogs, Users } from '@/db/schema'
+import { eq, and, desc, ilike } from 'drizzle-orm'
 
 export interface BlogPost {
-  id: string
+  id: string | null
   title: string
   date: string
-  excerpt: string
-  content: string
+  excerpt: string | null
+  content: string | null
   author: {
     name: string
     avatar: string
@@ -25,10 +20,10 @@ export interface BlogPost {
 }
 
 export interface BlogPostMeta {
-  id: string
+  id: string | null
   title: string
   date: string
-  excerpt: string
+  excerpt: string | null
   author: {
     name: string
     avatar: string
@@ -40,73 +35,56 @@ export interface BlogPostMeta {
   tags?: string[]
 }
 
-export function getSortedPostsData(): BlogPostMeta[] {
+export async function getSortedPostsData(): Promise<BlogPostMeta[]> {
   try {
-    // Check if directory exists
-    if (!fs.existsSync(postsDirectory)) {
-      console.warn(`Posts directory does not exist: ${postsDirectory}`)
-      return []
-    }
-
-    // Get file names under /content/blog
-    const fileNames = fs.readdirSync(postsDirectory)
-    const allPostsData = fileNames
-      .filter((fileName) => fileName.endsWith('.md'))
-      .map((fileName) => {
-        try {
-          // Remove ".md" from file name to get id
-          const id = fileName.replace(/\.md$/, '')
-
-          // Read markdown file as string
-          const fullPath = path.join(postsDirectory, fileName)
-          const fileContents = fs.readFileSync(fullPath, 'utf8')
-
-          // Use gray-matter to parse the post metadata section
-          const matterResult = matter(fileContents)
-
-          // Combine the data with the id
-          return {
-            id,
-            ...(matterResult.data as Omit<BlogPostMeta, 'id'>),
-          }
-        } catch (error) {
-          console.error(`Error processing file ${fileName}:`, error)
-          return null
-        }
+    const rows = await db
+      .select({
+        id: Blogs.slug,
+        title: Blogs.title,
+        excerpt: Blogs.excerpt,
+        createdAt: Blogs.createdAt,
+        category: Blogs.category,
+        readingTime: Blogs.readingTime,
+        tags: Blogs.tags,
+        author: {
+          name: Users.name,
+          picture: Users.picture,
+        },
       })
-      .filter((post): post is BlogPostMeta => post !== null) // Remove null entries with proper typing
+      .from(Blogs)
+      .innerJoin(Users, eq(Blogs.authorId, Users.user_id))
+      .where(eq(Blogs.approved, 1))
+      .orderBy(desc(Blogs.createdAt))
 
-    // Sort posts by date
-    return allPostsData.sort((a, b) => {
-      if (a.date < b.date) {
-        return 1
-      } else {
-        return -1
-      }
-    })
+    return rows.map(post => ({
+      id: post.id,
+      title: post.title,
+      excerpt: post.excerpt,
+      date: post.createdAt?.toISOString() || new Date().toISOString(),
+      category: post.category,
+      readTime: `${post.readingTime} min read`,
+      image: '/placeholder.jpg',
+      tags: post.tags?.split(',').map(tag => tag.trim()),
+      author: {
+        name: post.author.name,
+        avatar: post.author.picture,
+        role: 'IIITDM Student',
+      },
+    }))
   } catch (error) {
     console.error('Error in getSortedPostsData:', error)
     return []
   }
 }
 
-export function getAllPostIds() {
+export async function getAllPostIds() {
   try {
-    if (!fs.existsSync(postsDirectory)) {
-      console.warn(`Posts directory does not exist: ${postsDirectory}`)
-      return []
-    }
-
-    const fileNames = fs.readdirSync(postsDirectory)
-    return fileNames
-      .filter((fileName) => fileName.endsWith('.md'))
-      .map((fileName) => {
-        return {
-          params: {
-            slug: fileName.replace(/\.md$/, ''),
-          },
-        }
-      })
+    const rows = await db.select({ slug: Blogs.slug }).from(Blogs).where(eq(Blogs.approved, 1))
+    return rows.map(row => ({
+      params: {
+        slug: row.slug,
+      },
+    }))
   } catch (error) {
     console.error('Error in getAllPostIds:', error)
     return []
@@ -115,29 +93,43 @@ export function getAllPostIds() {
 
 export async function getPostData(slug: string): Promise<BlogPost> {
   try {
-    const fullPath = path.join(postsDirectory, `${slug}.md`)
-    
-    if (!fs.existsSync(fullPath)) {
-      throw new Error(`Post file not found: ${fullPath}`)
-    }
-    
-    const fileContents = fs.readFileSync(fullPath, 'utf8')
+    const row = await db
+      .select({
+        id: Blogs.slug,
+        title: Blogs.title,
+        excerpt: Blogs.excerpt,
+        content: Blogs.content,
+        createdAt: Blogs.createdAt,
+        category: Blogs.category,
+        readingTime: Blogs.readingTime,
+        tags: Blogs.tags,
+        author: {
+          name: Users.name,
+          picture: Users.picture,
+        },
+      })
+      .from(Blogs)
+      .innerJoin(Users, eq(Blogs.authorId, Users.user_id))
+      .where(and(eq(Blogs.slug, slug), eq(Blogs.approved, 1)))
+      .then(rows => rows[0])
 
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents)
+    if (!row) throw new Error('Post not found')
 
-    // Use remark to convert markdown into HTML string
-    const processedContent = await remark()
-      .use(html)
-      .use(remarkGfm)
-      .process(matterResult.content)
-    const contentHtml = processedContent.toString()
-
-    // Combine the data with the id and contentHtml
     return {
-      id: slug,
-      content: contentHtml,
-      ...(matterResult.data as Omit<BlogPost, 'id' | 'content'>),
+      id: row.id,
+      title: row.title,
+      excerpt: row.excerpt,
+      content: row.content,
+      date: row.createdAt?.toISOString() || new Date().toISOString(),
+      category: row.category,
+      readTime: `${row.readingTime} min read`,
+      image: '/placeholder.jpg',
+      tags: row.tags?.split(',').map(tag => tag.trim()),
+      author: {
+        name: row.author.name,
+        avatar: row.author.picture,
+        role: 'IIITDM Student',
+      },
     }
   } catch (error) {
     console.error(`Error in getPostData for slug ${slug}:`, error)
@@ -145,28 +137,28 @@ export async function getPostData(slug: string): Promise<BlogPost> {
   }
 }
 
-export function getPostsByCategory(category: string): BlogPostMeta[] {
+export async function getPostsByCategory(category: string): Promise<BlogPostMeta[]> {
   try {
-    const allPosts = getSortedPostsData()
-    return allPosts.filter((post) => post.category === category)
+    const posts = await getSortedPostsData()
+    return posts.filter(post => post.category === category)
   } catch (error) {
     console.error('Error in getPostsByCategory:', error)
     return []
   }
 }
 
-export function searchPosts(query: string): BlogPostMeta[] {
+export async function searchPosts(query: string): Promise<BlogPostMeta[]> {
   try {
-    const allPosts = getSortedPostsData()
+    const posts = await getSortedPostsData()
     const lowercaseQuery = query.toLowerCase()
-    
-    return allPosts.filter((post) => 
+
+    return posts.filter(post =>
       post.title.toLowerCase().includes(lowercaseQuery) ||
-      post.excerpt.toLowerCase().includes(lowercaseQuery) ||
+      post.excerpt?.toLowerCase().includes(lowercaseQuery) ||
       post.tags?.some(tag => tag.toLowerCase().includes(lowercaseQuery))
     )
   } catch (error) {
     console.error('Error in searchPosts:', error)
     return []
   }
-} 
+}

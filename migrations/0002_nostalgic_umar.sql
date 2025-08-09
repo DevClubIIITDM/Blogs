@@ -1,0 +1,1 @@
+ALTER TABLE "blogs" ADD COLUMN "approved" integer DEFAULT 0 NOT NULL;
