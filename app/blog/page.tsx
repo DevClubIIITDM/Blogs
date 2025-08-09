@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { BackgroundWrapper } from "@/components/background-wrapper"
 import { BlogClient } from "@/components/blog-client"
 import { getSortedPostsData } from "@/lib/markdown"
